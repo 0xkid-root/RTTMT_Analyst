@@ -1,4 +1,5 @@
 import { Lock, Monitor, Globe, Shield, Users } from 'lucide-react';
+import { Fragment } from 'react';
 import type { RuleTrigger } from '../types/command-center-types';
 
 interface TopRulesListProps {
@@ -24,16 +25,16 @@ export function TopRulesList({ data }: TopRulesListProps) {
         <button className="text-xs text-primary hover:underline font-medium">View all →</button>
       </div>
 
-      <div className="grid grid-cols-[auto_1fr_auto] gap-x-3 gap-y-3 items-center text-sm">
+      <div className="grid grid-cols-[auto_1fr_auto] gap-x-4 gap-y-4 items-center">
         <div className="col-span-2 text-xs font-medium text-muted-foreground">Rule Name</div>
         <div className="text-xs font-medium text-muted-foreground text-right">Hits (24h)</div>
 
         {data.map((rule) => (
-          <div key={rule.id} className="col-span-3 grid grid-cols-subgrid items-center py-1">
+          <Fragment key={rule.id}>
             <div className="flex justify-center">{getIcon(rule.iconType)}</div>
-            <div className="font-medium text-foreground truncate pr-2">{rule.ruleName}</div>
-            <div className="text-right text-muted-foreground">{rule.hits24h.toLocaleString()}</div>
-          </div>
+            <div className="font-medium text-foreground text-sm truncate pr-2">{rule.ruleName}</div>
+            <div className="text-right text-muted-foreground text-sm">{rule.hits24h.toLocaleString()}</div>
+          </Fragment>
         ))}
       </div>
     </div>
