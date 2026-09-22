@@ -22,6 +22,7 @@ import {
   mockTransactionVolume,
   mockAlertTrend,
   mockRecentCases,
+  mockNetworkEdges
 } from '../data/mock-command-center-data';
 
 export function CommandCenterPage() {
@@ -46,7 +47,7 @@ export function CommandCenterPage() {
         
         {/* Left: Map (66%) */}
         <div className="xl:col-span-2 min-h-[500px]">
-          <RiskMap locations={mockRiskLocations} />
+          <RiskMap locations={mockRiskLocations} edges={mockNetworkEdges} />
         </div>
         
         {/* Right: Charts and Lists (33%) */}

@@ -3,7 +3,7 @@
 import { useEffect, useRef, useState } from 'react';
 import * as maplibregl from 'maplibre-gl';
 import 'maplibre-gl/dist/maplibre-gl.css';
-import type { RiskLocation } from '../types/command-center-types';
+import type { RiskLocation, NetworkEdge } from '../types/command-center-types';
 import { clsx, type ClassValue } from 'clsx';
 import { twMerge } from 'tailwind-merge';
 
@@ -13,6 +13,7 @@ function cn(...inputs: ClassValue[]) {
 
 interface RiskMapProps {
   locations: RiskLocation[];
+  edges?: NetworkEdge[];
   className?: string;
 }
 
@@ -25,11 +26,12 @@ const getMarkerColor = (level: string) => {
   }
 };
 
-export function RiskMap({ locations, className = "w-full h-full min-h-[500px]" }: RiskMapProps) {
+export function RiskMap({ locations, edges = [], className = "w-full h-full min-h-[500px]" }: RiskMapProps) {
   const mapContainer = useRef<HTMLDivElement>(null);
   const map = useRef<maplibregl.Map | null>(null);
   const markersRef = useRef<maplibregl.Marker[]>([]);
   const [filter, setFilter] = useState<'ALL' | 'HIGH' | 'MEDIUM' | 'LOW'>('ALL');
+  const [mapLoaded, setMapLoaded] = useState(false);
 
   const INDIA_CENTER: [number, number] = [78.9629, 20.5937];
 
@@ -42,18 +44,104 @@ export function RiskMap({ locations, className = "w-full h-full min-h-[500px]" }
       style: process.env.NEXT_PUBLIC_MAP_STYLE_URL || 'https://basemaps.cartocdn.com/gl/dark-matter-gl-style/style.json',
       center: INDIA_CENTER,
       zoom: 3.8,
+      pitch: 35, // slight pitch for a cooler look
     });
 
     map.current.addControl(new maplibregl.NavigationControl({ showCompass: false }), 'top-left');
+
+    map.current.on('load', () => {
+      if (!map.current) return;
+
+      // Highlight India
+      map.current.addSource('india', {
+        type: 'geojson',
+        data: '/india.geojson'
+      });
+
+      map.current.addLayer({
+        id: 'india-fill',
+        type: 'fill',
+        source: 'india',
+        paint: {
+          'fill-color': '#0ea5e9',
+          'fill-opacity': 0.03
+        }
+      });
+
+      map.current.addLayer({
+        id: 'india-border-glow',
+        type: 'line',
+        source: 'india',
+        paint: {
+          'line-color': '#0ea5e9',
+          'line-width': 4,
+          'line-blur': 4,
+          'line-opacity': 0.5
+        }
+      });
+      
+      map.current.addLayer({
+        id: 'india-border',
+        type: 'line',
+        source: 'india',
+        paint: {
+          'line-color': '#38bdf8',
+          'line-width': 1.5,
+          'line-opacity': 0.8
+        }
+      });
+
+      // Network Edges
+      if (edges && edges.length > 0) {
+        const edgeFeatures = edges.map(edge => {
+          const source = locations.find(l => l.id === edge.sourceId);
+          const target = locations.find(l => l.id === edge.targetId);
+          if (!source || !target) return null;
+          return {
+            type: 'Feature',
+            geometry: {
+              type: 'LineString',
+              coordinates: [
+                [source.longitude, source.latitude],
+                [target.longitude, target.latitude]
+              ]
+            },
+            properties: {}
+          };
+        }).filter(Boolean) as GeoJSON.Feature<GeoJSON.LineString>[];
+
+        map.current.addSource('edges', {
+          type: 'geojson',
+          data: {
+            type: 'FeatureCollection',
+            features: edgeFeatures
+          }
+        });
+
+        map.current.addLayer({
+          id: 'edges-layer',
+          type: 'line',
+          source: 'edges',
+          paint: {
+            'line-color': '#fcd34d',
+            'line-width': 1,
+            'line-opacity': 0.3,
+            'line-dasharray': [2, 4]
+          }
+        });
+      }
+
+      setMapLoaded(true);
+    });
 
     return () => {
       map.current?.remove();
       map.current = null;
     };
-  }, []);
+  }, []); // eslint-disable-line react-hooks/exhaustive-deps
 
   useEffect(() => {
-    if (!map.current) return;
+    if (!map.current || !mapLoaded) return;
 
     markersRef.current.forEach(m => m.remove());
     markersRef.current = [];
@@ -70,18 +158,38 @@ export function RiskMap({ locations, className = "w-full h-full min-h-[500px]" }
       const el = document.createElement('div');
       
       const isHighRisk = loc.riskLevel === 'CRITICAL' || loc.riskLevel === 'HIGH';
+      const color = getMarkerColor(loc.riskLevel);
       
       el.className = cn(
-        'w-4 h-4 rounded-full border-2 border-background cursor-pointer transition-transform hover:scale-125 relative',
-        isHighRisk ? 'shadow-[0_0_15px_rgba(239,68,68,0.8)]' : 'shadow-md'
+        'w-3 h-3 rounded-full border border-background cursor-pointer transition-transform hover:scale-125 relative',
+        isHighRisk ? 'z-10' : 'shadow-md z-0'
       );
       
-      el.style.backgroundColor = getMarkerColor(loc.riskLevel);
-
+      el.style.backgroundColor = color;
+      
       if (isHighRisk) {
-        const pulse = document.createElement('div');
-        pulse.className = 'absolute -inset-2 rounded-full border border-danger/50 animate-ping';
-        el.appendChild(pulse);
+        el.style.boxShadow = `0 0 15px ${color}`;
+
+        const glow1 = document.createElement('div');
+        glow1.className = 'absolute -inset-2 rounded-full border opacity-60';
+        glow1.style.borderColor = color;
+        
+        const glow2 = document.createElement('div');
+        glow2.className = 'absolute -inset-4 rounded-full border opacity-30 animate-pulse';
+        glow2.style.borderColor = color;
+
+        const glow3 = document.createElement('div');
+        glow3.className = 'absolute -inset-6 rounded-full border opacity-10 animate-ping';
+        glow3.style.borderColor = color;
+
+        el.appendChild(glow1);
+        el.appendChild(glow2);
+        el.appendChild(glow3);
+      } else {
+        const glow1 = document.createElement('div');
+        glow1.className = 'absolute -inset-1 rounded-full border opacity-40';
+        glow1.style.borderColor = color;
+        el.appendChild(glow1);
       }
 
       const popupContent = document.createElement('div');
@@ -124,7 +232,7 @@ export function RiskMap({ locations, className = "w-full h-full min-h-[500px]" }
       markersRef.current.push(marker);
     });
 
-  }, [locations, filter]);
+  }, [locations, filter, mapLoaded]);
 
   return (
     <div className="bg-background border border-border rounded-xl shadow-sm overflow-hidden h-full flex flex-col relative">

@@ -6,7 +6,8 @@ import {
   RecentCase,
   MaliScoreDistribution,
   TransactionVolumeData,
-  AlertTrendData
+  AlertTrendData,
+  NetworkEdge
 } from '../types/command-center-types';
 
 export const mockRiskSummary: RiskSummary = {
@@ -27,6 +28,18 @@ export const mockRiskLocations: RiskLocation[] = [
   { id: 'loc-6', city: 'Pune', latitude: 18.5204, longitude: 73.8567, riskLevel: 'HIGH', transactions: 8200, alerts: 61, cases: 8 },
   { id: 'loc-7', city: 'Kolkata', latitude: 22.5726, longitude: 88.3639, riskLevel: 'MEDIUM', transactions: 7400, alerts: 33, cases: 4 },
   { id: 'loc-8', city: 'Ahmedabad', latitude: 23.0225, longitude: 72.5714, riskLevel: 'CRITICAL', transactions: 6200, alerts: 105, cases: 14 },
+];
+
+export const mockNetworkEdges: NetworkEdge[] = [
+  { id: 'edge-1', sourceId: 'loc-1', targetId: 'loc-2' },
+  { id: 'edge-2', sourceId: 'loc-1', targetId: 'loc-8' },
+  { id: 'edge-3', sourceId: 'loc-2', targetId: 'loc-3' },
+  { id: 'edge-4', sourceId: 'loc-3', targetId: 'loc-5' },
+  { id: 'edge-5', sourceId: 'loc-3', targetId: 'loc-4' },
+  { id: 'edge-6', sourceId: 'loc-2', targetId: 'loc-6' },
+  { id: 'edge-7', sourceId: 'loc-1', targetId: 'loc-7' },
+  { id: 'edge-8', sourceId: 'loc-4', targetId: 'loc-7' },
+  { id: 'edge-9', sourceId: 'loc-4', targetId: 'loc-1' },
 ];
 
 export const mockTopRules: RuleTrigger[] = [

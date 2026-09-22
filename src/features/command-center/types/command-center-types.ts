@@ -38,6 +38,12 @@ export interface RiskLocation {
   cases: number;
 }
 
+export interface NetworkEdge {
+  id: string;
+  sourceId: string;
+  targetId: string;
+}
+
 export interface RuleTrigger {
   id: string;
   ruleName: string;
