@@ -41,13 +41,13 @@ export function RiskMap({ locations, edges = [], className = "w-full h-full min-
 
     map.current = new maplibregl.Map({
       container: mapContainer.current,
-      style: process.env.NEXT_PUBLIC_MAP_STYLE_URL || 'https://basemaps.cartocdn.com/gl/dark-matter-gl-style/style.json',
+      style: 'https://basemaps.cartocdn.com/gl/dark-matter-gl-style/style.json',
       center: INDIA_CENTER,
       zoom: 3.8,
-      pitch: 35, // slight pitch for a cooler look
+      pitch: 35,
     });
 
-    map.current.addControl(new maplibregl.NavigationControl({ showCompass: false }), 'top-left');
+    map.current.addControl(new maplibregl.NavigationControl({ showCompass: false }), 'bottom-right');
 
     map.current.on('load', () => {
       if (!map.current) return;
