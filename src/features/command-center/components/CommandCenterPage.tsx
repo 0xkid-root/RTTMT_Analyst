@@ -59,7 +59,7 @@ export function CommandCenterPage() {
       </div>
       
       {/* Row 3: Bottom Tables and Charts */}
-      <div className="grid grid-cols-1 lg:grid-cols-2 xl:grid-cols-4 gap-5">
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-5">
         <RecentAlertsTable data={mockRecentAlerts} />
         <TransactionVolumeChart data={mockTransactionVolume} />
         <AlertTrendChart data={mockAlertTrend} />

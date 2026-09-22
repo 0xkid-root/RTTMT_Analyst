@@ -33,12 +33,12 @@ export function RiskDistributionChart({ data }: RiskDistributionChartProps) {
           return `{name|${name}}  {count|${val.count.toLocaleString()}}  {pct|(${val.percentage.toFixed(1)}%)}`;
         },
         textStyle: {
-          color: 'hsl(var(--muted-foreground))',
+          color: '#e5e7eb',
           fontSize: 12,
           rich: {
-            name: { width: 50, color: 'hsl(var(--foreground))' },
-            count: { width: 60, align: 'right', color: 'hsl(var(--foreground))', fontWeight: 'bold' },
-            pct: { width: 40, align: 'right', color: 'hsl(var(--muted-foreground))', fontSize: 10 }
+            name: { width: 50, color: '#ffffff' },
+            count: { width: 60, align: 'right', color: '#ffffff', fontWeight: 'bold' },
+            pct: { width: 40, align: 'right', color: '#e5e7eb', fontSize: 10 }
           }
         }
       },
@@ -71,7 +71,7 @@ export function RiskDistributionChart({ data }: RiskDistributionChartProps) {
         style: {
           text: `${data.totalTransactions.toLocaleString()}\nTotal Transactions`,
           textAlign: 'center',
-          fill: 'hsl(var(--foreground))',
+          fill: '#ffffff',
           fontSize: 14,
           fontWeight: 'bold'
         },

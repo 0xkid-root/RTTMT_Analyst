@@ -20,7 +20,7 @@ export function TransactionVolumeChart({ data }: TransactionVolumeChartProps) {
         data: ['Successful', 'Failed'],
         right: '5%',
         top: 0,
-        textStyle: { color: 'hsl(var(--muted-foreground))', fontSize: 12 },
+        textStyle: { color: '#e5e7eb', fontSize: 12 },
         icon: 'circle'
       },
       grid: {
@@ -35,13 +35,13 @@ export function TransactionVolumeChart({ data }: TransactionVolumeChartProps) {
         boundaryGap: false,
         data: data.times,
         axisLine: { lineStyle: { color: 'hsl(var(--border))' } },
-        axisLabel: { color: 'hsl(var(--muted-foreground))', fontSize: 10 },
+        axisLabel: { color: '#e5e7eb', fontSize: 10 },
       },
       yAxis: {
         type: 'value',
         splitLine: { lineStyle: { color: 'hsl(var(--border))', type: 'dashed' } },
         axisLabel: { 
-          color: 'hsl(var(--muted-foreground))', 
+          color: '#e5e7eb', 
           fontSize: 10,
           formatter: (value: number) => value >= 1000 ? `${value / 1000}K` : value.toString()
         },

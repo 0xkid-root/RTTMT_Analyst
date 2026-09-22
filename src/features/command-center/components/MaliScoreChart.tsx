@@ -29,7 +29,7 @@ export function MaliScoreChart({ data }: MaliScoreChartProps) {
         type: 'category',
         data: data.map(d => d.range),
         axisLine: { lineStyle: { color: 'hsl(var(--border))' } },
-        axisLabel: { color: 'hsl(var(--muted-foreground))', fontSize: 10 },
+        axisLabel: { color: '#e5e7eb', fontSize: 10 },
         axisTick: { show: false }
       },
       yAxis: {
@@ -39,7 +39,7 @@ export function MaliScoreChart({ data }: MaliScoreChartProps) {
         splitLine: { show: false },
         axisLabel: {
           formatter: '{value}%',
-          color: 'hsl(var(--muted-foreground))',
+          color: '#e5e7eb',
           fontSize: 10
         }
       },

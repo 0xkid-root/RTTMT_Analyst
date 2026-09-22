@@ -21,7 +21,7 @@ export function AlertTrendChart({ data }: AlertTrendChartProps) {
         data: ['Critical', 'High', 'Medium', 'Low'],
         right: '5%',
         top: 0,
-        textStyle: { color: 'hsl(var(--muted-foreground))', fontSize: 12 },
+        textStyle: { color: '#e5e7eb', fontSize: 12 },
         icon: 'circle',
         itemWidth: 8,
         itemHeight: 8,
@@ -37,12 +37,12 @@ export function AlertTrendChart({ data }: AlertTrendChartProps) {
         type: 'category',
         data: data.dates,
         axisLine: { lineStyle: { color: 'hsl(var(--border))' } },
-        axisLabel: { color: 'hsl(var(--muted-foreground))', fontSize: 10 },
+        axisLabel: { color: '#e5e7eb', fontSize: 10 },
       },
       yAxis: {
         type: 'value',
         splitLine: { lineStyle: { color: 'hsl(var(--border))', type: 'dashed' } },
-        axisLabel: { color: 'hsl(var(--muted-foreground))', fontSize: 10 },
+        axisLabel: { color: '#e5e7eb', fontSize: 10 },
       },
       series: [
         {
