@@ -1,5 +1,5 @@
-import { Sidebar } from './sidebar';
-import { Header } from './header';
+import { Sidebar } from '@/components/layout/sidebar';
+import { Header } from '@/components/layout/header';
 
 export function AppShell({ children }: { children: React.ReactNode }) {
   return (
