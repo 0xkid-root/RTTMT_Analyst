@@ -16,10 +16,10 @@ interface RiskKpiCardProps {
 
 export function RiskKpiCard({ title, value, subtext, trend, icon }: RiskKpiCardProps) {
   return (
-    <div className="bg-background border border-border rounded-xl p-5 shadow-sm flex flex-col justify-between">
-      <div className="flex items-center gap-3 mb-4">
+    <div className="bg-background border border-border rounded-xl p-4 shadow-sm flex flex-col justify-between">
+      <div className="flex items-center gap-3 mb-2">
         {icon && (
-          <div className="h-10 w-10 rounded-full flex items-center justify-center bg-muted">
+          <div className="h-8 w-8 rounded-full flex items-center justify-center bg-muted">
             {icon}
           </div>
         )}
@@ -27,7 +27,7 @@ export function RiskKpiCard({ title, value, subtext, trend, icon }: RiskKpiCardP
       </div>
       
       <div>
-        <div className="text-3xl font-bold text-foreground tracking-tight">{value}</div>
+        <div className="text-2xl font-bold text-foreground tracking-tight">{value}</div>
         
         {subtext && (
           <div className="mt-2 flex items-center text-xs font-medium">
