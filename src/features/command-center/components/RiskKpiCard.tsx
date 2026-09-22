@@ -10,27 +10,34 @@ interface RiskKpiCardProps {
   title: string;
   value: string | number;
   subtext?: string;
-  trend?: 'up' | 'down' | 'neutral';
+  trend?: 'up' | 'down' | 'neutral' | 'good';
   icon?: ReactNode;
 }
 
 export function RiskKpiCard({ title, value, subtext, trend, icon }: RiskKpiCardProps) {
   return (
     <div className="bg-background border border-border rounded-xl p-5 shadow-sm flex flex-col justify-between">
-      <div className="flex items-center justify-between mb-3">
+      <div className="flex items-center gap-3 mb-4">
+        {icon && (
+          <div className="h-10 w-10 rounded-full flex items-center justify-center bg-muted">
+            {icon}
+          </div>
+        )}
         <h3 className="text-sm font-medium text-muted-foreground">{title}</h3>
-        {icon && <div className="text-muted-foreground/60">{icon}</div>}
       </div>
       
       <div>
-        <div className="text-2xl font-bold text-foreground tracking-tight">{value}</div>
+        <div className="text-3xl font-bold text-foreground tracking-tight">{value}</div>
         
         {subtext && (
-          <div className="mt-1 flex items-center text-xs font-medium">
+          <div className="mt-2 flex items-center text-xs font-medium">
             <span
               className={cn(
                 "mr-1",
-                trend === 'up' ? "text-danger" : trend === 'down' ? "text-success" : "text-muted-foreground"
+                trend === 'up' ? "text-danger" : 
+                trend === 'down' ? "text-success" : 
+                trend === 'good' ? "text-success" :
+                "text-muted-foreground"
               )}
             >
               {subtext}
