@@ -4,6 +4,7 @@ import { useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import Link from 'next/link';
+import { useRouter } from 'next/navigation';
 import { loginSchema, type LoginFormData } from '../schemas/auth-schemas';
 import { PasswordInput } from './PasswordInput';
 import { Loader2 } from 'lucide-react';
@@ -11,6 +12,7 @@ import { Loader2 } from 'lucide-react';
 export function LoginForm() {
   const [isLoading, setIsLoading] = useState(false);
   const [mockError, setMockError] = useState<string | null>(null);
+  const router = useRouter();
 
   const {
     register,
@@ -34,9 +36,8 @@ export function LoginForm() {
       return;
     }
 
-    // Mock success - normally redirect here
-    console.log('Login successful', data);
-    setIsLoading(false);
+    // Mock success - route to command center
+    router.push('/command-center');
   };
 
   return (
