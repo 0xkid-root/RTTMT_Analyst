@@ -15,6 +15,19 @@ interface RiskDistributionChartProps {
 export function RiskDistributionChart({ data }: RiskDistributionChartProps) {
   const option: EChartsOption = useMemo(() => {
     return {
+      title: {
+        text: `${data.totalTransactions.toLocaleString()}\nTotal Transactions`,
+        left: '25%',
+        top: 'center',
+        textAlign: 'center',
+        textVerticalAlign: 'middle',
+        textStyle: {
+          color: '#ffffff',
+          fontSize: 14,
+          fontWeight: 'bold',
+          lineHeight: 20
+        }
+      },
       tooltip: {
         trigger: 'item',
         backgroundColor: 'hsl(var(--background))',
@@ -63,20 +76,7 @@ export function RiskDistributionChart({ data }: RiskDistributionChartProps) {
             { value: data.critical.count, name: 'Critical', itemStyle: { color: '#ef4444' } },
           ]
         }
-      ],
-      graphic: {
-        type: 'text',
-        left: '25%',
-        top: 'center',
-        style: {
-          text: `${data.totalTransactions.toLocaleString()}\nTotal Transactions`,
-          textAlign: 'center',
-          fill: '#ffffff',
-          fontSize: 14,
-          fontWeight: 'bold'
-        },
-        // To precisely center the graphic we can use bounding rects in raw echarts, but for react wrapper this is a simple approximation
-      }
+      ]
     };
   }, [data]);
 

@@ -28,10 +28,10 @@ export function CommandCenterPage() {
   const totalTrans = mockRiskSummary.totalTransactions.total;
   const distributionData = {
     totalTransactions: totalTrans,
-    low: { count: totalTrans * 0.813, percentage: 81.3 },
-    medium: { count: totalTrans * 0.136, percentage: 13.6 },
-    high: { count: totalTrans * 0.040, percentage: 4.0 },
-    critical: { count: totalTrans * 0.011, percentage: 1.1 },
+    low: { count: Math.round(totalTrans * 0.813), percentage: 81.3 },
+    medium: { count: Math.round(totalTrans * 0.136), percentage: 13.6 },
+    high: { count: Math.round(totalTrans * 0.040), percentage: 4.0 },
+    critical: { count: Math.round(totalTrans * 0.011), percentage: 1.1 },
   };
 
   return (
