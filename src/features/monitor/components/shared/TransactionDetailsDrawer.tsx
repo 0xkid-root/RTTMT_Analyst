@@ -5,6 +5,7 @@ import { RiskBadge } from './RiskBadge';
 import { TransactionStatusBadge } from './TransactionStatusBadge';
 import { X, MapPin, MonitorSmartphone, Globe, CreditCard, Clock, Store, Network } from 'lucide-react';
 import { Button } from '@/components/ui/button';
+import { useRouter } from 'next/navigation';
 
 interface TransactionDetailsDrawerProps {
   transaction: Transaction | null;
@@ -13,6 +14,8 @@ interface TransactionDetailsDrawerProps {
 }
 
 export function TransactionDetailsDrawer({ transaction, isOpen, onClose }: TransactionDetailsDrawerProps) {
+  const router = useRouter();
+  
   if (!transaction) return null;
 
   return (
@@ -158,7 +161,7 @@ export function TransactionDetailsDrawer({ transaction, isOpen, onClose }: Trans
             Investigate
           </Button>
           <div className="flex gap-2">
-            <Button variant="outline" className="w-full" onClick={() => alert('Case created')}>
+            <Button variant="outline" className="w-full" onClick={() => router.push(`/cases/create?txnId=${transaction.id}`)}>
               Create Case
             </Button>
             <Button variant="secondary" className="w-full" onClick={() => alert('Note added')}>
