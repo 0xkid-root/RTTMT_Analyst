@@ -174,15 +174,26 @@ const NAV_CATEGORIES: Category[] = [
   },
 ];
 
-export function Sidebar() {
+import { ChevronLeft } from 'lucide-react';
+
+interface SidebarProps {
+  isCollapsed?: boolean;
+  onToggle?: () => void;
+}
+
+export function Sidebar({ isCollapsed = false, onToggle }: SidebarProps) {
   const pathname = usePathname();
   
   // Track expanded state for each category by its label
-  // By default, expand categories that match the active path, or expand all for now to match screenshot
+  // By default, expand categories that match the active path
   const [expanded, setExpanded] = useState<Record<string, boolean>>(() => {
     const initialState: Record<string, boolean> = {};
     NAV_CATEGORIES.forEach(cat => {
-      initialState[cat.label] = true; // start expanded like the screenshot
+      if (cat.subItems) {
+        // Expand by default if any child is the currently active path
+        const isActive = cat.subItems.some(sub => pathname.startsWith(sub.href));
+        initialState[cat.label] = isActive;
+      }
     });
     return initialState;
   });
@@ -195,15 +206,15 @@ export function Sidebar() {
   };
 
   return (
-    <aside className="fixed inset-y-0 left-0 w-64 bg-sidebar border-r border-sidebar-border z-20 flex flex-col">
-      <div className="flex h-16 shrink-0 items-center px-6 border-b border-sidebar-border">
-        <div className="flex items-center gap-2 font-bold text-xl tracking-tight text-sidebar-foreground">
-          <ShieldAlert className="h-6 w-6 text-primary" />
-          <span>RTMT</span>
+    <aside className={`fixed inset-y-0 left-0 bg-sidebar border-r border-sidebar-border z-20 flex flex-col transition-all duration-300 ${isCollapsed ? 'w-16' : 'w-64'}`}>
+      <div className={`flex h-16 shrink-0 items-center border-b border-sidebar-border ${isCollapsed ? 'justify-center px-0' : 'px-6'}`}>
+        <div className="flex items-center gap-2 font-bold text-xl tracking-tight text-sidebar-foreground overflow-hidden whitespace-nowrap">
+          <ShieldAlert className="h-6 w-6 text-primary shrink-0" />
+          {!isCollapsed && <span>RTMT</span>}
         </div>
       </div>
       
-      <nav className="flex-1 overflow-y-auto py-4 px-3 flex flex-col gap-1">
+      <nav className={`flex-1 overflow-y-auto py-4 flex flex-col gap-1 ${isCollapsed ? 'px-2' : 'px-3'}`}>
         {NAV_CATEGORIES.map((category) => {
           
           if (!category.subItems) {
@@ -213,15 +224,17 @@ export function Sidebar() {
               <Link
                 key={category.label}
                 href={category.href!}
+                title={isCollapsed ? category.label : undefined}
                 className={cn(
-                  "flex items-center gap-3 px-3 py-2 rounded-md text-sm font-medium transition-colors mb-1",
+                  "flex items-center gap-3 py-2 rounded-md text-sm font-medium transition-colors mb-1",
+                  isCollapsed ? "justify-center px-0" : "px-3",
                   isActive 
                     ? "bg-sidebar-accent text-sidebar-accent-foreground" 
                     : "text-sidebar-foreground/70 hover:bg-sidebar-accent/50 hover:text-sidebar-foreground"
                 )}
               >
-                <category.icon className="h-4 w-4" />
-                {category.label}
+                <category.icon className="h-4 w-4 shrink-0" />
+                {!isCollapsed && <span>{category.label}</span>}
               </Link>
             );
           }
@@ -234,24 +247,33 @@ export function Sidebar() {
           return (
             <div key={category.label} className="mb-1 flex flex-col">
               <button
-                onClick={() => toggleCategory(category.label)}
+                onClick={() => {
+                  if (isCollapsed && onToggle) {
+                    onToggle(); // Auto-expand when clicking a category icon while collapsed
+                  }
+                  toggleCategory(category.label);
+                }}
+                title={isCollapsed ? category.label : undefined}
                 className={cn(
-                  "flex items-center justify-between px-3 py-2 rounded-md text-sm font-semibold transition-colors w-full group",
+                  "flex items-center justify-between py-2 rounded-md text-sm font-semibold transition-colors w-full group",
+                  isCollapsed ? "justify-center px-0" : "px-3",
                   hasActiveChild ? "text-sidebar-foreground" : "text-sidebar-foreground/70 hover:text-sidebar-foreground hover:bg-sidebar-accent/50"
                 )}
               >
                 <div className="flex items-center gap-3">
-                  <category.icon className="h-4 w-4" />
-                  <span>{category.label}</span>
+                  <category.icon className="h-4 w-4 shrink-0" />
+                  {!isCollapsed && <span>{category.label}</span>}
                 </div>
-                {isExpanded ? (
-                  <ChevronDown className="h-4 w-4 opacity-70" />
-                ) : (
-                  <ChevronRight className="h-4 w-4 opacity-70" />
+                {!isCollapsed && (
+                  isExpanded ? (
+                    <ChevronDown className="h-4 w-4 opacity-70" />
+                  ) : (
+                    <ChevronRight className="h-4 w-4 opacity-70" />
+                  )
                 )}
               </button>
               
-              {isExpanded && (
+              {isExpanded && !isCollapsed && (
                 <div className="flex flex-col mt-1 mb-1 ml-5 pl-4 border-l border-sidebar-border space-y-1">
                   {category.subItems.map((subItem) => {
                     const isChildActive = pathname === subItem.href;
@@ -278,9 +300,17 @@ export function Sidebar() {
         })}
       </nav>
       
-      <div className="p-4 border-t border-sidebar-border text-xs text-muted-foreground flex justify-between items-center">
-        <span>v1.0.0-foundation</span>
+      <div className="p-4 border-t border-sidebar-border text-xs text-muted-foreground flex items-center justify-center">
+        {!isCollapsed && <span>v1.0.0-foundation</span>}
       </div>
+
+      <button 
+        onClick={onToggle}
+        className="absolute -right-3 top-8 z-30 flex h-6 w-6 items-center justify-center rounded-full border border-sidebar-border bg-background text-sidebar-foreground shadow-md hover:bg-sidebar-accent transition-all hover:scale-110"
+        title={isCollapsed ? "Expand Sidebar" : "Collapse Sidebar"}
+      >
+        {isCollapsed ? <ChevronRight className="w-3.5 h-3.5" /> : <ChevronLeft className="w-3.5 h-3.5" />}
+      </button>
     </aside>
   );
 }
