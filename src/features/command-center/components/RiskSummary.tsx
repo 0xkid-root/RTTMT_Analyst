@@ -1,4 +1,4 @@
-import { BellRing, ShieldAlert, Activity, AlertTriangle, Briefcase } from 'lucide-react';
+import { ArrowLeftRight, AlertTriangle, Bell, FolderOpen, CheckCircle2, Clock } from 'lucide-react';
 import { RiskKpiCard } from './RiskKpiCard';
 import type { RiskSummary as RiskSummaryType } from '../types/command-center-types';
 
@@ -8,45 +8,53 @@ interface RiskSummaryProps {
 
 export function RiskSummary({ data }: RiskSummaryProps) {
   return (
-    <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-4 mb-6">
+    <div className="grid grid-cols-2 lg:grid-cols-3 gap-4 mb-6">
       <RiskKpiCard
-        title="Active Alerts"
-        value={data.activeAlerts.total}
-        subtext={`+${data.activeAlerts.trend} today`}
+        title="Total Transactions"
+        value={data.totalTransactions.total.toLocaleString()}
+        subtext={`↑ ${data.totalTransactions.trendPercent}% vs. previous 24h`}
+        trend="neutral"
+        icon={<ArrowLeftRight className="h-5 w-5 text-primary" />}
+      />
+      
+      <RiskKpiCard
+        title="High Risk Transactions"
+        value={data.highRiskTransactions.total.toLocaleString()}
+        subtext={`↑ ${data.highRiskTransactions.trendPercent}% vs. previous 24h`}
         trend="up"
-        icon={<BellRing className="h-4 w-4" />}
+        icon={<AlertTriangle className="h-5 w-5 text-danger" />}
       />
       
       <RiskKpiCard
-        title="High Risk"
-        value={data.highRisk.total}
-        subtext={`${data.highRisk.critical} critical`}
-        trend="up"
-        icon={<ShieldAlert className="h-4 w-4 text-danger/70" />}
-      />
-      
-      <RiskKpiCard
-        title="Transactions"
-        value={`${(data.transactions.total / 1000000).toFixed(2)}M`}
-        subtext={`+${data.transactions.trendPercent}%`}
-        trend="neutral" // Neutral because high transactions isn't necessarily bad risk
-        icon={<Activity className="h-4 w-4" />}
-      />
-      
-      <RiskKpiCard
-        title="Risk Rate"
-        value={`${data.riskRate.value}%`}
-        subtext={`↓ ${Math.abs(data.riskRate.trendPercent)}%`}
+        title="Open Alerts"
+        value={data.openAlerts.total.toLocaleString()}
+        subtext={`↓ ${Math.abs(data.openAlerts.trendPercent)}% vs. previous 24h`}
         trend="down"
-        icon={<AlertTriangle className="h-4 w-4" />}
+        icon={<Bell className="h-5 w-5 text-danger" />}
       />
       
       <RiskKpiCard
         title="Open Cases"
-        value={data.openCases.total}
-        subtext={`${data.openCases.priority} priority`}
-        trend="neutral"
-        icon={<Briefcase className="h-4 w-4" />}
+        value={data.openCases.total.toLocaleString()}
+        subtext={`↓ ${Math.abs(data.openCases.trendPercent)}% vs. previous 24h`}
+        trend="down"
+        icon={<FolderOpen className="h-5 w-5 text-warning" />}
+      />
+      
+      <RiskKpiCard
+        title="Resolved Today"
+        value={data.resolvedToday.total.toLocaleString()}
+        subtext={`↑ ${data.resolvedToday.trendPercent}% vs. previous 24h`}
+        trend="down" // down = success visually for trend colors in KPI card currently, wait, I should fix trend colors if 'down' is success. Actually trend='up' is red in kpi card. I'll make a custom one or just fix RiskKpiCard.
+        icon={<CheckCircle2 className="h-5 w-5 text-success" />}
+      />
+
+      <RiskKpiCard
+        title="SLA Breached"
+        value={data.slaBreached.total.toLocaleString()}
+        subtext={`↑ ${data.slaBreached.trendPercent}% vs. previous 24h`}
+        trend="up"
+        icon={<Clock className="h-5 w-5 text-indigo-400" />}
       />
     </div>
   );

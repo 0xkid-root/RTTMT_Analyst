@@ -2,57 +2,72 @@
 
 import { CommandCenterHeader } from './CommandCenterHeader';
 import { RiskSummary } from './RiskSummary';
-import { RiskMap } from './RiskMap';
-import { PriorityActivity } from './PriorityActivity';
-import { RiskActivityChart } from './RiskActivityChart';
-import { TransactionActivity } from './TransactionActivity';
-import { RiskDistribution } from './RiskDistribution';
-import { RecentActivity } from './RecentActivity';
+import dynamic from 'next/dynamic';
+const TransactionRiskMap = dynamic(() => import('./TransactionRiskMap'), { 
+  ssr: false,
+  loading: () => <div className="w-full h-full min-h-[500px] flex items-center justify-center bg-background border border-border rounded-xl text-muted-foreground">Loading Risk Map...</div>
+});
+import { RiskDistributionChart } from './RiskDistributionChart';
+import { MaliScoreChart } from './MaliScoreChart';
+import { TopRulesList } from './TopRulesList';
+
+import { RecentAlertsTable } from './RecentAlertsTable';
+import { TransactionVolumeChart } from './TransactionVolumeChart';
+import { AlertTrendChart } from './AlertTrendChart';
+import { RecentCasesTable } from './RecentCasesTable';
 
 import {
   mockRiskSummary,
   mockRiskLocations,
-  mockPriorityActivity,
-  mockRiskChartData,
-  mockTransactionActivity,
-  mockRiskDistribution,
-  mockRecentEvents
+  mockTopRules,
+  mockMaliScoreDistribution,
+  mockRecentAlerts,
+  mockTransactionVolume,
+  mockAlertTrend,
+  mockRecentCases,
+  mockNetworkEdges
 } from '../data/mock-command-center-data';
 
 export function CommandCenterPage() {
+  const totalTrans = mockRiskSummary.totalTransactions.total;
+  const distributionData = {
+    totalTransactions: totalTrans,
+    low: { count: Math.round(totalTrans * 0.813), percentage: 81.3 },
+    medium: { count: Math.round(totalTrans * 0.136), percentage: 13.6 },
+    high: { count: Math.round(totalTrans * 0.040), percentage: 4.0 },
+    critical: { count: Math.round(totalTrans * 0.011), percentage: 1.1 },
+  };
+
   return (
-    <div className="flex flex-col gap-6 max-w-[1600px] mx-auto">
+    <div className="flex flex-col gap-5 max-w-[1600px] mx-auto">
       <CommandCenterHeader />
       
+      {/* Row 1: KPIs */}
       <RiskSummary data={mockRiskSummary} />
       
-      {/* Main Operations Area */}
-      <div className="grid grid-cols-1 xl:grid-cols-4 gap-6 min-h-[500px]">
-        {/* Map gets 3 columns on extra large screens */}
-        <div className="xl:col-span-3">
-          <RiskMap locations={mockRiskLocations} />
+      {/* Row 2: Map & Right Column Stats */}
+      <div className="grid grid-cols-1 xl:grid-cols-3 gap-5">
+        
+        {/* Left: Map (66%) */}
+        <div className="xl:col-span-2 min-h-[500px]">
+          <TransactionRiskMap />
         </div>
         
-        {/* Priority Activity gets 1 column */}
-        <div className="xl:col-span-1">
-          <PriorityActivity data={mockPriorityActivity} />
+        {/* Right: Charts and Lists (33%) */}
+        <div className="xl:col-span-1 flex flex-col gap-5">
+          <RiskDistributionChart data={distributionData} />
+          <MaliScoreChart data={mockMaliScoreDistribution} />
+          <TopRulesList data={mockTopRules} />
         </div>
+        
       </div>
       
-      {/* Secondary Operations Area */}
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-        <RiskActivityChart data={mockRiskChartData} />
-        <TransactionActivity data={mockTransactionActivity} />
-      </div>
-      
-      {/* Tertiary Operations Area */}
-      <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-        <div className="lg:col-span-1">
-          <RiskDistribution data={mockRiskDistribution} />
-        </div>
-        <div className="lg:col-span-2">
-          <RecentActivity data={mockRecentEvents} />
-        </div>
+      {/* Row 3: Bottom Tables and Charts */}
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-5">
+        <RecentAlertsTable data={mockRecentAlerts} />
+        <TransactionVolumeChart data={mockTransactionVolume} />
+        <AlertTrendChart data={mockAlertTrend} />
+        <RecentCasesTable data={mockRecentCases} />
       </div>
       
     </div>

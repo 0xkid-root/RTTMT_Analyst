@@ -1,65 +1,90 @@
 export type RiskLevel = 'LOW' | 'MEDIUM' | 'HIGH' | 'CRITICAL';
 
 export interface RiskSummary {
-  activeAlerts: {
+  totalTransactions: {
     total: number;
-    trend: number; // positive = increase
+    trendPercent: number; // positive = increase
   };
-  highRisk: {
+  highRiskTransactions: {
     total: number;
-    critical: number;
+    trendPercent: number;
   };
-  transactions: {
-    total: number; // e.g. 1280000 -> 1.28M
-    trendPercent: number; 
-  };
-  riskRate: {
-    value: number; // e.g. 2.7
+  openAlerts: {
+    total: number;
     trendPercent: number; // negative = decrease
   };
   openCases: {
     total: number;
-    priority: number;
+    trendPercent: number;
+  };
+  resolvedToday: {
+    total: number;
+    trendPercent: number;
+  };
+  slaBreached: {
+    total: number;
+    trendPercent: number;
   };
 }
 
 export interface RiskLocation {
   id: string;
   city: string;
+  state?: string;
   latitude: number;
   longitude: number;
   riskLevel: RiskLevel;
   transactions: number;
-  riskEvents: number;
+  alerts: number;
+  cases: number;
+  riskScore?: number;
+  maliScore?: number;
 }
 
-export interface PriorityActivity {
+export interface NetworkEdge {
+  id: string;
+  sourceId: string;
+  targetId: string;
+}
+
+export interface RuleTrigger {
+  id: string;
+  ruleName: string;
+  hits24h: number;
+  iconType: 'lock' | 'shield' | 'globe' | 'monitor' | 'users';
+}
+
+export interface RecentAlert {
   id: string;
   riskLevel: RiskLevel;
-  type: string;
   merchant: string;
-  location: string;
-  timestamp: string; // ISO or relative e.g., "2 min ago"
+  amount: number;
+  time: string;
 }
 
-export interface TransactionActivitySummary {
-  successful: number;
-  underReview: number;
-  declined: number;
-  riskFlagged: number;
-}
-
-export interface RiskDistributionSummary {
-  low: number;
-  medium: number;
-  high: number;
-  critical: number;
-}
-
-export interface RecentEvent {
+export interface RecentCase {
   id: string;
-  time: string; // HH:mm
-  type: string;
-  description: string;
-  status: 'info' | 'warning' | 'error' | 'success';
+  priority: RiskLevel;
+  merchant: string;
+  status: 'Investigating' | 'Assigned' | 'Pending Review' | 'Open' | 'Closed';
+}
+
+export interface MaliScoreDistribution {
+  range: string;
+  percentage: number;
+}
+
+// Keeping these if needed, though they might be replaced by direct ECharts data structures in components
+export interface TransactionVolumeData {
+  times: string[];
+  successful: number[];
+  failed: number[];
+}
+
+export interface AlertTrendData {
+  dates: string[];
+  critical: number[];
+  high: number[];
+  medium: number[];
+  low: number[];
 }
