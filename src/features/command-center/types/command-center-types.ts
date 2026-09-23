@@ -30,12 +30,15 @@ export interface RiskSummary {
 export interface RiskLocation {
   id: string;
   city: string;
+  state?: string;
   latitude: number;
   longitude: number;
   riskLevel: RiskLevel;
   transactions: number;
   alerts: number;
   cases: number;
+  riskScore?: number;
+  maliScore?: number;
 }
 
 export interface NetworkEdge {

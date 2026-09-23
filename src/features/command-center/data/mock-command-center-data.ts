@@ -20,14 +20,24 @@ export const mockRiskSummary: RiskSummary = {
 };
 
 export const mockRiskLocations: RiskLocation[] = [
-  { id: 'loc-1', city: 'Delhi', latitude: 28.7041, longitude: 77.1025, riskLevel: 'CRITICAL', transactions: 8421, alerts: 142, cases: 18 },
-  { id: 'loc-2', city: 'Mumbai', latitude: 19.076, longitude: 72.8777, riskLevel: 'HIGH', transactions: 12420, alerts: 89, cases: 12 },
-  { id: 'loc-3', city: 'Bengaluru', latitude: 12.9716, longitude: 77.5946, riskLevel: 'MEDIUM', transactions: 15050, alerts: 45, cases: 5 },
-  { id: 'loc-4', city: 'Hyderabad', latitude: 17.3850, longitude: 78.4867, riskLevel: 'LOW', transactions: 9400, alerts: 12, cases: 1 },
-  { id: 'loc-5', city: 'Chennai', latitude: 13.0827, longitude: 80.2707, riskLevel: 'LOW', transactions: 11800, alerts: 14, cases: 2 },
-  { id: 'loc-6', city: 'Pune', latitude: 18.5204, longitude: 73.8567, riskLevel: 'HIGH', transactions: 8200, alerts: 61, cases: 8 },
-  { id: 'loc-7', city: 'Kolkata', latitude: 22.5726, longitude: 88.3639, riskLevel: 'MEDIUM', transactions: 7400, alerts: 33, cases: 4 },
-  { id: 'loc-8', city: 'Ahmedabad', latitude: 23.0225, longitude: 72.5714, riskLevel: 'CRITICAL', transactions: 6200, alerts: 105, cases: 14 },
+  { id: 'loc-1', city: 'Delhi', state: 'Delhi', latitude: 28.6139, longitude: 77.2090, transactions: 8421, alerts: 142, cases: 18, riskLevel: 'HIGH', riskScore: 82, maliScore: 78 },
+  { id: 'loc-2', city: 'Mumbai', state: 'Maharashtra', latitude: 19.0760, longitude: 72.8777, transactions: 12500, alerts: 300, cases: 45, riskLevel: 'CRITICAL', riskScore: 95, maliScore: 92 },
+  { id: 'loc-3', city: 'Bengaluru', state: 'Karnataka', latitude: 12.9716, longitude: 77.5946, transactions: 15050, alerts: 45, cases: 5, riskLevel: 'MEDIUM', riskScore: 54, maliScore: 48 },
+  { id: 'loc-4', city: 'Hyderabad', state: 'Telangana', latitude: 17.3850, longitude: 78.4867, transactions: 9400, alerts: 12, cases: 1, riskLevel: 'LOW', riskScore: 22, maliScore: 19 },
+  { id: 'loc-5', city: 'Chennai', state: 'Tamil Nadu', latitude: 13.0827, longitude: 80.2707, transactions: 11800, alerts: 14, cases: 2, riskLevel: 'LOW', riskScore: 28, maliScore: 24 },
+  { id: 'loc-6', city: 'Pune', state: 'Maharashtra', latitude: 18.5204, longitude: 73.8567, transactions: 8200, alerts: 61, cases: 8, riskLevel: 'HIGH', riskScore: 76, maliScore: 71 },
+  { id: 'loc-7', city: 'Kolkata', state: 'West Bengal', latitude: 22.5726, longitude: 88.3639, transactions: 7400, alerts: 33, cases: 4, riskLevel: 'MEDIUM', riskScore: 45, maliScore: 42 },
+  { id: 'loc-8', city: 'Ahmedabad', state: 'Gujarat', latitude: 23.0225, longitude: 72.5714, transactions: 6200, alerts: 105, cases: 14, riskLevel: 'CRITICAL', riskScore: 89, maliScore: 85 },
+  { id: 'loc-9', city: 'Jaipur', state: 'Rajasthan', latitude: 26.9124, longitude: 75.7873, transactions: 4500, alerts: 18, cases: 2, riskLevel: 'LOW', riskScore: 31, maliScore: 29 },
+  { id: 'loc-10', city: 'Lucknow', state: 'Uttar Pradesh', latitude: 26.8467, longitude: 80.9462, transactions: 5100, alerts: 44, cases: 6, riskLevel: 'MEDIUM', riskScore: 58, maliScore: 55 },
+  { id: 'loc-11', city: 'Surat', state: 'Gujarat', latitude: 21.1702, longitude: 72.8311, transactions: 6800, alerts: 72, cases: 9, riskLevel: 'HIGH', riskScore: 79, maliScore: 74 },
+  { id: 'loc-12', city: 'Indore', state: 'Madhya Pradesh', latitude: 22.7196, longitude: 75.8577, transactions: 3200, alerts: 11, cases: 1, riskLevel: 'LOW', riskScore: 25, maliScore: 21 },
+  { id: 'loc-13', city: 'Patna', state: 'Bihar', latitude: 25.5941, longitude: 85.1376, transactions: 2900, alerts: 39, cases: 5, riskLevel: 'MEDIUM', riskScore: 61, maliScore: 58 },
+  { id: 'loc-14', city: 'Chandigarh', state: 'Chandigarh', latitude: 30.7333, longitude: 76.7794, transactions: 4100, alerts: 15, cases: 1, riskLevel: 'LOW', riskScore: 19, maliScore: 18 },
+  { id: 'loc-15', city: 'Kochi', state: 'Kerala', latitude: 9.9312, longitude: 76.2673, transactions: 5500, alerts: 28, cases: 3, riskLevel: 'MEDIUM', riskScore: 47, maliScore: 45 },
+  { id: 'loc-16', city: 'Bhopal', state: 'Madhya Pradesh', latitude: 23.2599, longitude: 77.4126, transactions: 2800, alerts: 9, cases: 0, riskLevel: 'LOW', riskScore: 15, maliScore: 14 },
+  { id: 'loc-17', city: 'Nagpur', state: 'Maharashtra', latitude: 21.1458, longitude: 79.0882, transactions: 3800, alerts: 22, cases: 2, riskLevel: 'LOW', riskScore: 34, maliScore: 32 },
+  { id: 'loc-18', city: 'Guwahati', state: 'Assam', latitude: 26.1445, longitude: 91.7362, transactions: 2100, alerts: 41, cases: 7, riskLevel: 'HIGH', riskScore: 81, maliScore: 77 },
 ];
 
 export const mockNetworkEdges: NetworkEdge[] = [
