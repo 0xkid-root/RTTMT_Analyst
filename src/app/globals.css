@@ -1,4 +1,6 @@
 @import "tailwindcss";
+@import "maplibre-gl/dist/maplibre-gl.css";
+
 
 @custom-variant dark (&:is(.dark *));
 
@@ -169,5 +171,15 @@
   }
   body {
     @apply bg-background text-foreground;
+  }
+  
+  /* Force Maplibre to fill container in Next.js */
+  .maplibregl-canvas-container,
+  .maplibregl-canvas {
+    width: 100% !important;
+    height: 100% !important;
+    position: absolute !important;
+    top: 0;
+    left: 0;
   }
 }
