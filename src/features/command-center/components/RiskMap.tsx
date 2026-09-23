@@ -2,7 +2,6 @@
 
 import { useEffect, useRef, useState } from 'react';
 import * as maplibregl from 'maplibre-gl';
-import 'maplibre-gl/dist/maplibre-gl.css';
 import type { RiskLocation, NetworkEdge } from '../types/command-center-types';
 import { clsx, type ClassValue } from 'clsx';
 import { twMerge } from 'tailwind-merge';
@@ -26,7 +25,7 @@ const getMarkerColor = (level: string) => {
   }
 };
 
-export function RiskMap({ locations, edges = [], className = "w-full h-full min-h-[500px]" }: RiskMapProps) {
+export default function RiskMap({ locations, edges = [], className = "flex-1 w-full h-full min-h-[500px]" }: RiskMapProps) {
   const mapContainer = useRef<HTMLDivElement>(null);
   const map = useRef<maplibregl.Map | null>(null);
   const markersRef = useRef<maplibregl.Marker[]>([]);
@@ -50,91 +49,72 @@ export function RiskMap({ locations, edges = [], className = "w-full h-full min-
     map.current.addControl(new maplibregl.NavigationControl({ showCompass: false }), 'bottom-right');
 
     map.current.on('load', () => {
+      console.log('MapLibre: load event fired!');
       if (!map.current) return;
 
-      // Highlight India
-      map.current.addSource('india', {
-        type: 'geojson',
-        data: '/india.geojson'
-      });
+      try {
+        // Network Edges
+        if (edges && edges.length > 0) {
+          const edgeFeatures = edges.map(edge => {
+            const source = locations.find(l => l.id === edge.sourceId);
+            const target = locations.find(l => l.id === edge.targetId);
+            if (!source || !target) return null;
+            return {
+              type: 'Feature',
+              geometry: {
+                type: 'LineString',
+                coordinates: [
+                  [source.longitude, source.latitude],
+                  [target.longitude, target.latitude]
+                ]
+              },
+              properties: {}
+            };
+          }).filter(Boolean) as GeoJSON.Feature<GeoJSON.LineString>[];
 
-      map.current.addLayer({
-        id: 'india-fill',
-        type: 'fill',
-        source: 'india',
-        paint: {
-          'fill-color': '#0ea5e9',
-          'fill-opacity': 0.03
+          map.current.addSource('edges', {
+            type: 'geojson',
+            data: {
+              type: 'FeatureCollection',
+              features: edgeFeatures
+            }
+          });
+
+          map.current.addLayer({
+            id: 'edges-layer',
+            type: 'line',
+            source: 'edges',
+            paint: {
+              'line-color': '#fcd34d',
+              'line-width': 1,
+              'line-opacity': 0.3,
+              'line-dasharray': [2, 4]
+            }
+          });
         }
-      });
-
-      map.current.addLayer({
-        id: 'india-border-glow',
-        type: 'line',
-        source: 'india',
-        paint: {
-          'line-color': '#0ea5e9',
-          'line-width': 4,
-          'line-blur': 4,
-          'line-opacity': 0.5
-        }
-      });
-      
-      map.current.addLayer({
-        id: 'india-border',
-        type: 'line',
-        source: 'india',
-        paint: {
-          'line-color': '#38bdf8',
-          'line-width': 1.5,
-          'line-opacity': 0.8
-        }
-      });
-
-      // Network Edges
-      if (edges && edges.length > 0) {
-        const edgeFeatures = edges.map(edge => {
-          const source = locations.find(l => l.id === edge.sourceId);
-          const target = locations.find(l => l.id === edge.targetId);
-          if (!source || !target) return null;
-          return {
-            type: 'Feature',
-            geometry: {
-              type: 'LineString',
-              coordinates: [
-                [source.longitude, source.latitude],
-                [target.longitude, target.latitude]
-              ]
-            },
-            properties: {}
-          };
-        }).filter(Boolean) as GeoJSON.Feature<GeoJSON.LineString>[];
-
-        map.current.addSource('edges', {
-          type: 'geojson',
-          data: {
-            type: 'FeatureCollection',
-            features: edgeFeatures
-          }
-        });
-
-        map.current.addLayer({
-          id: 'edges-layer',
-          type: 'line',
-          source: 'edges',
-          paint: {
-            'line-color': '#fcd34d',
-            'line-width': 1,
-            'line-opacity': 0.3,
-            'line-dasharray': [2, 4]
-          }
-        });
+      } catch (err) {
+        console.error('Error adding edges to map', err);
       }
 
       setMapLoaded(true);
     });
 
+    map.current.on('error', (e) => {
+      console.error('MapLibre error:', e);
+    });
+
+    const resizeObserver = new ResizeObserver(() => {
+      if (map.current) {
+        map.current.resize();
+      }
+    });
+
+    if (mapContainer.current) {
+      resizeObserver.observe(mapContainer.current);
+    }
+
     return () => {
+      resizeObserver.disconnect();
       map.current?.remove();
       map.current = null;
     };
@@ -196,29 +176,43 @@ export function RiskMap({ locations, edges = [], className = "w-full h-full min-
       popupContent.className = 'p-3 bg-background border border-border rounded-lg shadow-lg min-w-[200px] text-foreground font-sans';
       
       popupContent.innerHTML = `
-        <div class="flex justify-between items-start mb-2">
-          <h4 class="font-bold text-sm">${loc.city}</h4>
-          <span class="text-[10px] px-1.5 py-0.5 rounded font-bold ${
-            loc.riskLevel === 'CRITICAL' ? 'bg-danger/10 text-danger' :
-            loc.riskLevel === 'HIGH' ? 'bg-warning/10 text-warning' :
-            loc.riskLevel === 'MEDIUM' ? 'bg-warning/10 text-warning' :
-            'bg-success/10 text-success'
-          }">${loc.riskLevel}</span>
+        <div class="flex justify-between items-start mb-3">
+          <h4 class="font-bold text-sm tracking-wide text-white">${loc.city}</h4>
+          <span class="text-[10px] px-2 py-0.5 rounded font-bold uppercase tracking-wider ${
+            loc.riskLevel === 'CRITICAL' ? 'bg-red-500/20 text-red-400' :
+            loc.riskLevel === 'HIGH' ? 'bg-orange-500/20 text-orange-400' :
+            loc.riskLevel === 'MEDIUM' ? 'bg-yellow-500/20 text-yellow-400' :
+            'bg-green-500/20 text-green-400'
+          }">${loc.riskLevel} RISK</span>
         </div>
-        <div class="space-y-1 text-xs">
+        <div class="space-y-1.5 text-xs">
           <div class="flex justify-between">
-            <span class="text-muted-foreground">Transactions</span>
-            <span class="font-medium">${loc.transactions.toLocaleString()}</span>
+            <span class="text-zinc-400">Transactions</span>
+            <span class="font-medium font-mono text-zinc-100">${loc.transactions.toLocaleString()}</span>
           </div>
           <div class="flex justify-between">
-            <span class="text-muted-foreground">Alerts</span>
-            <span class="font-medium">${loc.alerts.toLocaleString()}</span>
+            <span class="text-zinc-400">Alerts</span>
+            <span class="font-medium font-mono text-zinc-100">${loc.alerts.toLocaleString()}</span>
           </div>
           <div class="flex justify-between">
-            <span class="text-muted-foreground">Cases</span>
-            <span class="font-medium">${loc.cases.toLocaleString()}</span>
+            <span class="text-zinc-400">Cases</span>
+            <span class="font-medium font-mono text-zinc-100">${loc.cases.toLocaleString()}</span>
           </div>
         </div>
+        ${loc.riskScore || loc.maliScore ? `
+        <div class="mt-3 pt-3 border-t border-zinc-700/50 space-y-1.5 text-xs">
+          ${loc.riskScore ? `
+          <div class="flex justify-between">
+            <span class="text-zinc-400">Risk Score</span>
+            <span class="font-medium font-mono ${loc.riskScore > 80 ? 'text-red-400' : loc.riskScore > 50 ? 'text-orange-400' : 'text-green-400'}">${loc.riskScore}</span>
+          </div>` : ''}
+          ${loc.maliScore ? `
+          <div class="flex justify-between">
+            <span class="text-zinc-400">MALi Score</span>
+            <span class="font-medium font-mono ${loc.maliScore > 80 ? 'text-red-400' : loc.maliScore > 50 ? 'text-orange-400' : 'text-green-400'}">${loc.maliScore}</span>
+          </div>` : ''}
+        </div>
+        ` : ''}
       `;
 
       const popup = new maplibregl.Popup({ offset: 15, closeButton: false, className: 'rtmt-popup' })
@@ -280,17 +274,22 @@ export function RiskMap({ locations, edges = [], className = "w-full h-full min-
       
       <style dangerouslySetInnerHTML={{__html: `
         .rtmt-popup .maplibregl-popup-content {
-          background: transparent;
+          background: rgba(9, 9, 11, 0.95);
+          backdrop-filter: blur(8px);
+          border: 1px solid rgba(255, 255, 255, 0.1);
           padding: 0;
           border-radius: 0.5rem;
-          box-shadow: none;
+          box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.5), 0 8px 10px -6px rgba(0, 0, 0, 0.3);
         }
         .rtmt-popup .maplibregl-popup-tip {
-          border-top-color: hsl(var(--border));
+          border-top-color: rgba(9, 9, 11, 0.95);
+        }
+        .rtmt-popup .maplibregl-popup-content > div {
+          padding: 0.75rem;
         }
       `}} />
       
-      <div ref={mapContainer} className={className} />
+      <div ref={mapContainer} className={className} style={{ position: 'relative', width: '100%', height: '100%', minHeight: '500px', flex: 1 }} />
     </div>
   );
 }
