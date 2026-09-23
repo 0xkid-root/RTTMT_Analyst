@@ -2,8 +2,11 @@
 
 import { CommandCenterHeader } from './CommandCenterHeader';
 import { RiskSummary } from './RiskSummary';
-import { RiskMap } from './RiskMap';
-
+import dynamic from 'next/dynamic';
+const TransactionRiskMap = dynamic(() => import('./TransactionRiskMap'), { 
+  ssr: false,
+  loading: () => <div className="w-full h-full min-h-[500px] flex items-center justify-center bg-background border border-border rounded-xl text-muted-foreground">Loading Risk Map...</div>
+});
 import { RiskDistributionChart } from './RiskDistributionChart';
 import { MaliScoreChart } from './MaliScoreChart';
 import { TopRulesList } from './TopRulesList';
@@ -47,7 +50,7 @@ export function CommandCenterPage() {
         
         {/* Left: Map (66%) */}
         <div className="xl:col-span-2 min-h-[500px]">
-          <RiskMap locations={mockRiskLocations} edges={mockNetworkEdges} />
+          <TransactionRiskMap />
         </div>
         
         {/* Right: Charts and Lists (33%) */}
