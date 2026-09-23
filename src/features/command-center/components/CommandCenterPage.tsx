@@ -45,24 +45,19 @@ export function CommandCenterPage() {
       {/* Row 1: KPIs */}
       <RiskSummary data={mockRiskSummary} />
       
-      {/* Row 2: Map & Right Column Stats */}
-      <div className="grid grid-cols-1 xl:grid-cols-3 gap-5">
-        
-        {/* Left: Map (66%) */}
-        <div className="xl:col-span-2 min-h-[500px]">
-          <TransactionRiskMap />
-        </div>
-        
-        {/* Right: Charts and Lists (33%) */}
-        <div className="xl:col-span-1 flex flex-col gap-5">
-          <RiskDistributionChart data={distributionData} />
-          <MaliScoreChart data={mockMaliScoreDistribution} />
-          <TopRulesList data={mockTopRules} />
-        </div>
-        
+      {/* Row 2: Map (Full Width) */}
+      <div className="w-full h-[500px] xl:h-[600px] rounded-xl overflow-hidden border border-border">
+        <TransactionRiskMap />
       </div>
       
-      {/* Row 3: Bottom Tables and Charts */}
+      {/* Row 3: Charts and Lists (3 Columns) */}
+      <div className="grid grid-cols-1 lg:grid-cols-3 gap-5">
+        <RiskDistributionChart data={distributionData} />
+        <MaliScoreChart data={mockMaliScoreDistribution} />
+        <TopRulesList data={mockTopRules} />
+      </div>
+      
+      {/* Row 4: Bottom Tables and Charts */}
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-5">
         <RecentAlertsTable data={mockRecentAlerts} />
         <TransactionVolumeChart data={mockTransactionVolume} />
