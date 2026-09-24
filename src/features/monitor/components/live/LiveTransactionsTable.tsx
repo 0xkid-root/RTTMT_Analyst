@@ -1,60 +1,41 @@
 'use client';
 
 import { useState, useEffect, useRef } from 'react';
+import {
+  useReactTable,
+  getCoreRowModel,
+  VisibilityState
+} from '@tanstack/react-table';
 import { Transaction } from '../../types/transaction';
-import { generateNewLiveTransaction } from '../../data/mockTransactions';
-import { RiskBadge } from '../shared/RiskBadge';
-import { TransactionStatusBadge } from '../shared/TransactionStatusBadge';
+import { liveColumns } from '../shared/transaction-columns';
+import { DataTable, DataTableColumnVisibility } from '@/components/data-table';
+import { ArrowDown } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 
 interface LiveTransactionsTableProps {
-  isPaused: boolean;
+  transactions: Transaction[];
   searchTerm: string;
-  autoScroll: boolean;
   onTransactionClick: (t: Transaction) => void;
-  onNewTransaction: (t: Transaction) => void;
+  autoScroll: boolean;
+  setAutoScroll: (val: boolean) => void;
+  newCount: number;
+  setNewCount: React.Dispatch<React.SetStateAction<number>>;
 }
 
 export function LiveTransactionsTable({ 
-  isPaused, 
+  transactions,
   searchTerm, 
-  autoScroll,
   onTransactionClick,
-  onNewTransaction
+  autoScroll,
+  setAutoScroll,
+  newCount,
+  setNewCount
 }: LiveTransactionsTableProps) {
-  const [transactions, setTransactions] = useState<Transaction[]>([]);
-  const [highlightedId, setHighlightedId] = useState<string | null>(null);
-  const nextId = useRef(1);
-
-  // Initialize with some transactions
-  useEffect(() => {
-    const initial = Array.from({ length: 20 }, () => {
-      const t = generateNewLiveTransaction(nextId.current++);
-      return t;
-    }).sort((a, b) => new Date(b.timestamp).getTime() - new Date(a.timestamp).getTime());
-    setTransactions(initial);
-  }, []);
-
-  // Live stream interval
-  useEffect(() => {
-    if (isPaused) return;
-    
-    const interval = setInterval(() => {
-      const newTxn = generateNewLiveTransaction(nextId.current++);
-      
-      setTransactions(prev => {
-        const next = [newTxn, ...prev].slice(0, 100); // Keep last 100
-        return next;
-      });
-      
-      setHighlightedId(newTxn.id);
-      setTimeout(() => setHighlightedId(null), 2000); // clear highlight after 2s
-      
-      onNewTransaction(newTxn);
-    }, 3000); // Every 3 seconds
-    
-    return () => clearInterval(interval);
-  }, [isPaused, onNewTransaction]);
+  const scrollContainerRef = useRef<HTMLDivElement>(null);
+  const [columnVisibility, setColumnVisibility] = useState<VisibilityState>({});
+  
+  // Track previous transactions length to detect new arrivals
+  const prevLengthRef = useRef(transactions.length);
 
   const filtered = transactions.filter(t => {
     if (!searchTerm) return true;
@@ -64,91 +45,97 @@ export function LiveTransactionsTable({
            t.accountReference.toLowerCase().includes(term);
   });
 
+  const table = useReactTable({
+    data: filtered,
+    columns: liveColumns,
+    getCoreRowModel: getCoreRowModel(),
+    onColumnVisibilityChange: setColumnVisibility,
+    state: {
+      columnVisibility,
+    },
+  });
+
+  // Handle new transactions arriving
+  useEffect(() => {
+    if (transactions.length > prevLengthRef.current) {
+      const added = transactions.length - prevLengthRef.current;
+      if (autoScroll) {
+        // Auto scroll to bottom
+        setTimeout(() => {
+          if (scrollContainerRef.current) {
+            scrollContainerRef.current.scrollTop = scrollContainerRef.current.scrollHeight;
+          }
+        }, 50);
+      } else {
+        // Increment new count if auto-scroll is off
+        setNewCount(prev => prev + added);
+      }
+    }
+    prevLengthRef.current = transactions.length;
+  }, [transactions, autoScroll, setNewCount]);
+
+  // Handle manual scrolling
+  const handleScroll = () => {
+    if (!scrollContainerRef.current) return;
+    const { scrollTop, scrollHeight, clientHeight } = scrollContainerRef.current;
+    const isAtBottom = scrollHeight - scrollTop - clientHeight < 10;
+    
+    if (!isAtBottom && autoScroll) {
+      setAutoScroll(false); // User scrolled up
+    } else if (isAtBottom && !autoScroll) {
+      setAutoScroll(true); // User reached the bottom naturally
+      setNewCount(0);
+    }
+  };
+
+  const jumpToLatest = () => {
+    setAutoScroll(true);
+    setNewCount(0);
+    if (scrollContainerRef.current) {
+      scrollContainerRef.current.scrollTop = scrollContainerRef.current.scrollHeight;
+    }
+  };
+
   return (
-    <div className="bg-card border border-border rounded-xl overflow-hidden shadow-sm flex flex-col flex-1">
-      <div className="overflow-x-auto">
-        <table className="w-full text-left text-sm">
-          <thead className="bg-muted/50 border-b border-border text-xs uppercase text-muted-foreground">
-            <tr>
-              <th className="px-4 py-3 font-medium">Time</th>
-              <th className="px-4 py-3 font-medium">Transaction ID</th>
-              <th className="px-4 py-3 font-medium">Merchant</th>
-              <th className="px-4 py-3 font-medium text-right">Amount</th>
-              <th className="px-4 py-3 font-medium">Payment</th>
-              <th className="px-4 py-3 font-medium">Location</th>
-              <th className="px-4 py-3 font-medium text-center">Risk</th>
-              <th className="px-4 py-3 font-medium text-center">MALi</th>
-              <th className="px-4 py-3 font-medium">Detection</th>
-              <th className="px-4 py-3 font-medium">Status</th>
-            </tr>
-          </thead>
-          <tbody className="divide-y divide-border">
-            {filtered.map(t => (
-              <tr 
-                key={t.id} 
-                onClick={() => onTransactionClick(t)}
-                className={`cursor-pointer transition-colors hover:bg-muted/50 ${
-                  highlightedId === t.id ? 'bg-primary/10' : ''
-                }`}
-              >
-                <td className="px-4 py-3 whitespace-nowrap text-muted-foreground font-mono">
-                  {new Date(t.timestamp).toLocaleTimeString('en-IN', { hour12: false, timeZone: 'Asia/Kolkata' })}
-                </td>
-                <td className="px-4 py-3 whitespace-nowrap font-medium text-primary">
-                  {t.id}
-                </td>
-                <td className="px-4 py-3 whitespace-nowrap">
-                  {t.merchant}
-                </td>
-                <td className="px-4 py-3 whitespace-nowrap font-mono font-medium text-right">
-                  ₹{t.amount.toLocaleString('en-IN')}
-                </td>
-                <td className="px-4 py-3 whitespace-nowrap text-muted-foreground">
-                  {t.paymentMethod}
-                </td>
-                <td className="px-4 py-3 whitespace-nowrap text-muted-foreground">
-                  {t.location}
-                </td>
-                <td className="px-4 py-3 whitespace-nowrap text-center">
-                  <RiskBadge level={t.riskLevel} />
-                </td>
-                <td className="px-4 py-3 whitespace-nowrap text-center">
-                  <span className={`font-mono font-semibold ${
-                    t.maliScore >= 80 ? 'text-red-500' : t.maliScore >= 60 ? 'text-orange-500' : 'text-foreground'
-                  }`}>
-                    {t.maliScore}
-                  </span>
-                </td>
-                <td className="px-4 py-3 whitespace-nowrap">
-                  {t.detectionRules.length > 0 ? (
-                    <div className="flex flex-col gap-1">
-                      <span className="text-xs truncate max-w-[150px]">{t.detectionRules[0]}</span>
-                      {t.detectionRules.length > 1 && (
-                        <span className="text-[10px] text-muted-foreground">+{t.detectionRules.length - 1} more</span>
-                      )}
-                    </div>
-                  ) : (
-                    <span className="text-muted-foreground">-</span>
-                  )}
-                </td>
-                <td className="px-4 py-3 whitespace-nowrap">
-                  <TransactionStatusBadge status={t.status} />
-                </td>
-              </tr>
-            ))}
-            
-            {filtered.length === 0 && (
-              <tr>
-                <td colSpan={10} className="px-4 py-8 text-center text-muted-foreground">
-                  No transactions match your filters.
-                </td>
-              </tr>
-            )}
-          </tbody>
-        </table>
+    <div className="flex-1 flex flex-col min-h-0 space-y-2 relative">
+      <div className="flex justify-between items-center px-1">
+        <div className="text-sm text-muted-foreground font-medium">
+          {newCount > 0 ? (
+            <span className="text-primary font-semibold">{newCount} new transactions</span>
+          ) : (
+            <span>Live stream active</span>
+          )}
+        </div>
+        <div className="flex gap-4 items-center">
+          {newCount > 0 && !autoScroll && (
+            <Button 
+              size="sm" 
+              variant="default" 
+              className="h-8 gap-2 bg-primary/20 text-primary hover:bg-primary/30 border border-primary/30"
+              onClick={jumpToLatest}
+            >
+              <ArrowDown className="w-4 h-4" />
+              Jump to latest
+            </Button>
+          )}
+          <DataTableColumnVisibility table={table} />
+        </div>
       </div>
-      <div className="p-3 border-t border-border bg-muted/20 text-center text-xs text-muted-foreground">
-        Showing latest {Math.min(filtered.length, 100)} transactions
+
+      <div 
+        ref={scrollContainerRef}
+        onScroll={handleScroll}
+        className="flex-1 overflow-y-auto"
+      >
+        <DataTable 
+          table={table} 
+          onRowClick={onTransactionClick}
+          emptyMessage="No live transactions found."
+        />
+      </div>
+
+      <div className="p-2 bg-muted/20 text-center text-xs text-muted-foreground rounded-lg border border-border">
+        Live stream • Showing latest {Math.min(filtered.length, 100)} transactions
       </div>
     </div>
   );

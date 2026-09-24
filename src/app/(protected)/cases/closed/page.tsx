@@ -1,5 +1,14 @@
-import { ClosedCasesPage } from '@/features/cases/components/ClosedCasesPage';
+'use client';
+
+import { useEffect } from 'react';
+import { useRouter } from 'next/navigation';
 
 export default function Page() {
-  return <ClosedCasesPage />;
+  const router = useRouter();
+  
+  useEffect(() => {
+    router.replace('/cases/queue?status=CLOSED');
+  }, [router]);
+
+  return null;
 }

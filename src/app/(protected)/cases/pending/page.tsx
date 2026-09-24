@@ -1,5 +1,14 @@
-import { PendingReviewPage } from '@/features/cases/components/PendingReviewPage';
+'use client';
+
+import { useEffect } from 'react';
+import { useRouter } from 'next/navigation';
 
 export default function Page() {
-  return <PendingReviewPage />;
+  const router = useRouter();
+  
+  useEffect(() => {
+    router.replace('/cases/queue?status=PENDING_REVIEW');
+  }, [router]);
+
+  return null;
 }
