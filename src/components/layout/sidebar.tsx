@@ -104,8 +104,6 @@ const NAV_CATEGORIES: Category[] = [
     subItems: [
       { label: 'Case Queue', href: '/cases/queue', icon: Box },
       { label: 'My Cases', href: '/cases/my-cases', icon: Save },
-      { label: 'Pending Review', href: '/cases/pending', icon: FileText },
-      { label: 'Closed Cases', href: '/cases/closed', icon: CheckSquare },
     ]
   },
   { 
