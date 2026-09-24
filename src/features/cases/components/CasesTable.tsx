@@ -37,7 +37,7 @@ export function CasesTable({ cases, emptyMessage = 'No cases found.' }: CasesTab
     <div className="bg-card border border-border rounded-xl overflow-hidden shadow-sm flex flex-col flex-1 min-h-[500px]">
       <div className="overflow-x-auto flex-1">
         <table className="w-full text-left text-sm">
-          <thead className="bg-muted/50 border-b border-border text-xs uppercase text-muted-foreground sticky top-0 z-10 backdrop-blur-sm">
+          <thead className="bg-muted/50 border-b border-border text-xs uppercase text-muted-foreground">
             <tr>
               <th className="px-4 py-3 font-medium">Case ID</th>
               <th className="px-4 py-3 font-medium">Case Title</th>
