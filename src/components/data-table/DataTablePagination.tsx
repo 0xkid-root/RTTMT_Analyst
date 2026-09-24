@@ -24,7 +24,7 @@ export function DataTablePagination<TData>({ table }: DataTablePaginationProps<T
             }}
             className="h-8 w-[70px] rounded-md border border-input bg-transparent px-2 py-1 text-sm ring-offset-background focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2 [&>option]:bg-background [&>option]:text-foreground"
           >
-            {[10, 20, 30, 40, 50].map((pageSize) => (
+            {[10, 15, 20, 30, 40, 50].map((pageSize) => (
               <option key={pageSize} value={pageSize} className="bg-background text-foreground">
                 {pageSize}
               </option>

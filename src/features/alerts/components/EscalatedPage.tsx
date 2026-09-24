@@ -21,7 +21,7 @@ export function EscalatedPage() {
   };
 
   const SummaryCards = (
-    <>
+    <div className="grid grid-cols-3 gap-4">
       <div className="bg-card border border-orange-500/30 p-4 rounded-xl shadow-sm">
         <div className="text-sm text-orange-500 font-medium mb-1">Escalated Alerts</div>
         <div className="text-2xl font-bold">{activeEscalated}</div>
@@ -34,7 +34,7 @@ export function EscalatedPage() {
         <div className="text-sm text-muted-foreground font-medium mb-1">Awaiting Review</div>
         <div className="text-2xl font-bold">{awaitingReview}</div>
       </div>
-    </>
+    </div>
   );
 
   return (

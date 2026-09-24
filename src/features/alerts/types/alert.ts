@@ -6,6 +6,7 @@ export interface Alert {
   id: string; // e.g. ALT-2026-008421
   title: string; // e.g. UPI Transaction Anomaly
   description: string;
+  alertType: string;
   severity: AlertSeverity;
   status: AlertStatus;
   
@@ -14,7 +15,10 @@ export interface Alert {
   merchantId: string;
   merchantName: string;
   accountId?: string;
+  accountStatus?: string;
   caseId?: string;
+  caseTitle?: string;
+  caseStatus?: string;
   
   // Context
   amount?: number;
@@ -26,6 +30,7 @@ export interface Alert {
   riskScore: number;
   ruleId: string;
   ruleName: string;
+  riskIndicators?: string[];
   
   // SLA
   slaTargetTime: string; // ISO date string

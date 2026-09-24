@@ -31,7 +31,7 @@ export function SlaBreachedPage() {
   };
 
   const SummaryCards = (
-    <>
+    <div className="grid grid-cols-4 gap-4">
       <div className="bg-card border border-red-500/30 p-4 rounded-xl shadow-sm">
         <div className="text-sm text-red-500 font-medium mb-1">Breached Alerts</div>
         <div className="text-2xl font-bold">{activeBreaches}</div>
@@ -48,7 +48,7 @@ export function SlaBreachedPage() {
         <div className="text-sm text-orange-500 font-medium mb-1">Unassigned Breaches</div>
         <div className="text-2xl font-bold">{unassignedBreaches}</div>
       </div>
-    </>
+    </div>
   );
 
   return (

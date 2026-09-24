@@ -14,7 +14,7 @@ import { alertsColumns } from './alerts-columns';
 import { DataTable, DataTablePagination, DataTableColumnVisibility } from '@/components/data-table';
 import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
-import { RefreshCw, Download, Search } from 'lucide-react';
+import { RefreshCw, Download, Search, ChevronDown, Filter, SlidersHorizontal } from 'lucide-react';
 
 interface AlertsTableProps {
   alerts: Alert[];
@@ -27,6 +27,7 @@ interface AlertsTableProps {
   onSearchChange: (val: string) => void;
   summaryCards?: React.ReactNode;
   initialVisibility?: VisibilityState;
+  hideFilters?: string[];
 }
 
 export function AlertsTable({
@@ -39,7 +40,8 @@ export function AlertsTable({
   searchQuery,
   onSearchChange,
   summaryCards,
-  initialVisibility = {}
+  initialVisibility = {},
+  hideFilters = []
 }: AlertsTableProps) {
   const [sorting, setSorting] = useState<SortingState>([]);
   const [rowSelection, setRowSelection] = useState({});
@@ -92,26 +94,59 @@ export function AlertsTable({
       </div>
 
       {summaryCards && (
-        <div className="grid grid-cols-4 gap-4">
+        <div className="w-full">
           {summaryCards}
         </div>
       )}
 
-      <div className="flex items-center justify-between">
-        <div className="flex items-center gap-4">
-          <div className="relative w-[300px]">
-            <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
-            <Input 
-              placeholder="Search alert ID, transaction, merchant..." 
-              value={searchQuery}
-              onChange={(e) => onSearchChange(e.target.value)}
-              className="pl-9 bg-card border-border"
-            />
-          </div>
-          {/* Add more filter dropdowns here later if needed */}
+      <div className="flex flex-wrap items-center gap-3 w-full pb-2">
+        <div className="relative w-[280px] shrink-0">
+          <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
+          <Input 
+            placeholder="Search alert ID, transaction..." 
+            value={searchQuery}
+            onChange={(e) => onSearchChange(e.target.value)}
+            className="pl-9 bg-card border-border h-9"
+          />
         </div>
         
-        <DataTableColumnVisibility table={table} />
+        {/* Filter Dropdowns UI */}
+        <div className="flex items-center gap-2 shrink-0">
+          {!hideFilters.includes('severity') && (
+            <Button variant="outline" size="sm" className="h-9 gap-1 text-muted-foreground bg-card border-border">
+              Severity <ChevronDown className="w-3.5 h-3.5 ml-1 opacity-50" />
+            </Button>
+          )}
+          {!hideFilters.includes('status') && (
+            <Button variant="outline" size="sm" className="h-9 gap-1 text-muted-foreground bg-card border-border">
+              Status <ChevronDown className="w-3.5 h-3.5 ml-1 opacity-50" />
+            </Button>
+          )}
+          {!hideFilters.includes('alertType') && (
+            <Button variant="outline" size="sm" className="h-9 gap-1 text-muted-foreground bg-card border-border">
+              Alert Type <ChevronDown className="w-3.5 h-3.5 ml-1 opacity-50" />
+            </Button>
+          )}
+          {!hideFilters.includes('sla') && (
+            <Button variant="outline" size="sm" className="h-9 gap-1 text-muted-foreground bg-card border-border">
+              SLA <ChevronDown className="w-3.5 h-3.5 ml-1 opacity-50" />
+            </Button>
+          )}
+          {!hideFilters.includes('assignedTo') && (
+            <Button variant="outline" size="sm" className="h-9 gap-1 text-muted-foreground bg-card border-border">
+              Assigned To <ChevronDown className="w-3.5 h-3.5 ml-1 opacity-50" />
+            </Button>
+          )}
+          {!hideFilters.includes('moreFilters') && (
+            <Button variant="outline" size="sm" className="h-9 gap-1 text-muted-foreground bg-card border-border border-dashed ml-1">
+              <Filter className="w-3.5 h-3.5 mr-1" /> More Filters
+            </Button>
+          )}
+        </div>
+        
+        <div className="flex items-center gap-2 ml-auto shrink-0">
+          <DataTableColumnVisibility table={table} />
+        </div>
       </div>
 
       <DataTable 
