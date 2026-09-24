@@ -50,7 +50,7 @@ function generateTransaction(idSuffix: number, offsetMinutes = 0): Transaction {
     status = Math.random() > 0.7 ? 'REVIEW' : 'CLEAR';
   }
 
-  const detectionRules = [];
+  const detectionRules: string[] = [];
   if (riskLevel !== 'LOW') {
     const numRules = riskLevel === 'CRITICAL' ? getRandomInt(2, 4) : riskLevel === 'HIGH' ? getRandomInt(1, 2) : 1;
     for (let i = 0; i < numRules; i++) {
