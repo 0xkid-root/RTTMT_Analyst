@@ -24,7 +24,7 @@ const generateInitialCases = (): Case[] => {
     // Generate varied statuses for the demo
     let status: CaseStatus = 'OPEN';
     if (index % 5 === 0) status = 'CLOSED';
-    else if (index % 4 === 0) status = 'PENDING_REVIEW';
+    else if (index % 4 === 0) status = 'IN_REVIEW';
     else if (index % 3 === 0) status = 'IN_REVIEW';
     else if (index % 7 === 0) status = 'ESCALATED';
 
