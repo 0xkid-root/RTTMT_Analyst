@@ -6,7 +6,7 @@ import { FileText } from 'lucide-react';
 
 export function PendingReviewPage() {
   const cases = useCaseStore(state => state.cases);
-  const pendingCases = cases.filter(c => c.status === 'PENDING_REVIEW');
+  const pendingCases = cases.filter(c => c.status === 'IN_REVIEW');
   
   return (
     <div className="flex-1 overflow-auto p-6 max-w-[1600px] mx-auto w-full flex flex-col h-full">
