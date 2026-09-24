@@ -86,7 +86,7 @@ export default function TransactionRiskMap({ className = "" }: { className?: str
       center: [79, 22.5],
       zoom: 4.2,
       pitch: 0,
-      attributionControl: true
+      attributionControl: false
     });
 
     newMap.addControl(new maplibregl.NavigationControl({ showCompass: false }), 'top-left');
