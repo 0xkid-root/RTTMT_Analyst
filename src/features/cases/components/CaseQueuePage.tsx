@@ -14,7 +14,6 @@ export function CaseQueuePage() {
   const cases = useCaseStore(state => state.cases);
   
   const [statusFilter, setStatusFilter] = useState('ALL');
-  const [searchTerm, setSearchTerm] = useState('');
 
   // Sync state from URL
   useEffect(() => {
@@ -38,32 +37,14 @@ export function CaseQueuePage() {
     router.replace(`${pathname}?${params.toString()}`);
   };
 
-  // Filter cases based on status and search term
+  // Filter cases based on status
   const filteredCases = useMemo(() => {
-    let result = cases;
-    
-    // Status Filter
-    if (statusFilter !== 'ALL') {
-      result = result.filter(c => c.status === statusFilter);
-    }
-    
-    // Search Filter
-    if (searchTerm.trim()) {
-      const q = searchTerm.toLowerCase();
-      result = result.filter(c => 
-        c.id.toLowerCase().includes(q) ||
-        c.title.toLowerCase().includes(q) ||
-        c.sourceTransactionId.toLowerCase().includes(q) ||
-        c.assignedTo.toLowerCase().includes(q) ||
-        (c.sourceTransaction?.merchant?.toLowerCase().includes(q))
-      );
-    }
-    
-    return result;
-  }, [cases, statusFilter, searchTerm]);
+    if (statusFilter === 'ALL') return cases;
+    return cases.filter(c => c.status === statusFilter);
+  }, [cases, statusFilter]);
 
   return (
-    <div className="flex-1 overflow-auto p-6 max-w-[1600px] mx-auto w-full flex flex-col h-full">
+    <div className="max-w-[1600px] mx-auto w-full flex flex-col">
       <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-6">
         <div className="flex items-center gap-3">
           <div className="p-3 bg-primary/10 text-primary rounded-xl">
@@ -89,8 +70,6 @@ export function CaseQueuePage() {
         cases={cases}
         statusFilter={statusFilter}
         setStatusFilter={handleStatusFilterChange}
-        searchTerm={searchTerm}
-        setSearchTerm={setSearchTerm}
       />
 
       <CasesTable cases={filteredCases} emptyMessage="No cases match your filters." />

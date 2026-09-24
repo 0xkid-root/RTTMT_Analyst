@@ -7,8 +7,6 @@ interface CaseFiltersProps {
   cases: Case[];
   statusFilter: string;
   setStatusFilter: (status: string) => void;
-  searchTerm: string;
-  setSearchTerm: (term: string) => void;
 }
 
 export const CASE_STATUSES = [
@@ -24,9 +22,7 @@ export const CASE_STATUSES = [
 export function CaseFilters({
   cases,
   statusFilter,
-  setStatusFilter,
-  searchTerm,
-  setSearchTerm
+  setStatusFilter
 }: CaseFiltersProps) {
   
   // Calculate counts for the tabs
@@ -70,29 +66,6 @@ export function CaseFilters({
         })}
       </div>
 
-      {/* Search and Extra Filters Row */}
-      <div className="flex flex-col sm:flex-row items-center justify-between gap-4">
-        <div className="relative w-full sm:max-w-md">
-          <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
-          <input 
-            type="text"
-            placeholder="Search Case ID, title, transaction, analyst..."
-            value={searchTerm}
-            onChange={(e: React.ChangeEvent<HTMLInputElement>) => setSearchTerm(e.target.value)}
-            className="pl-9 w-full bg-card flex h-10 rounded-md border border-input px-3 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
-          />
-        </div>
-        
-        <div className="flex gap-2">
-          {/* Placeholders for future dropdown filters like Priority, Case Type, etc. */}
-          <button className="px-3 py-2 text-sm font-medium border border-border bg-card rounded-md text-muted-foreground hover:bg-muted transition-colors">
-            Priority
-          </button>
-          <button className="px-3 py-2 text-sm font-medium border border-border bg-card rounded-md text-muted-foreground hover:bg-muted transition-colors">
-            Case Type
-          </button>
-        </div>
-      </div>
     </div>
   );
 }

@@ -18,7 +18,6 @@ export function MyCasesPage() {
   const myCases = useMemo(() => allCases.filter(c => c.assignedTo === 'Current Analyst'), [allCases]);
   
   const [statusFilter, setStatusFilter] = useState('ALL');
-  const [searchTerm, setSearchTerm] = useState('');
 
   // Sync state from URL
   useEffect(() => {
@@ -42,31 +41,14 @@ export function MyCasesPage() {
     router.replace(`${pathname}?${params.toString()}`);
   };
 
-  // Filter cases based on status and search term
+  // Filter cases based on status
   const filteredCases = useMemo(() => {
-    let result = myCases;
-    
-    // Status Filter
-    if (statusFilter !== 'ALL') {
-      result = result.filter(c => c.status === statusFilter);
-    }
-    
-    // Search Filter
-    if (searchTerm.trim()) {
-      const q = searchTerm.toLowerCase();
-      result = result.filter(c => 
-        c.id.toLowerCase().includes(q) ||
-        c.title.toLowerCase().includes(q) ||
-        c.sourceTransactionId.toLowerCase().includes(q) ||
-        (c.sourceTransaction?.merchant?.toLowerCase().includes(q))
-      );
-    }
-    
-    return result;
-  }, [myCases, statusFilter, searchTerm]);
+    if (statusFilter === 'ALL') return myCases;
+    return myCases.filter(c => c.status === statusFilter);
+  }, [myCases, statusFilter]);
 
   return (
-    <div className="flex-1 overflow-auto p-6 max-w-[1600px] mx-auto w-full flex flex-col h-full">
+    <div className="max-w-[1600px] mx-auto w-full flex flex-col">
       <div className="flex items-center gap-3 mb-6">
         <div className="p-3 bg-blue-500/10 text-blue-500 rounded-xl">
           <Save className="w-6 h-6" />
@@ -81,8 +63,6 @@ export function MyCasesPage() {
         cases={myCases} // Pass myCases so tabs show counts specific to My Cases
         statusFilter={statusFilter}
         setStatusFilter={handleStatusFilterChange}
-        searchTerm={searchTerm}
-        setSearchTerm={setSearchTerm}
       />
 
       <CasesTable cases={filteredCases} emptyMessage="No cases match your filters." />
