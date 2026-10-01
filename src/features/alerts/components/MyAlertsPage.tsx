@@ -1,6 +1,6 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useMemo } from 'react';
 import { AlertsTable } from './AlertsTable';
 import { useAlerts } from '../hooks/useAlerts';
 import { Alert } from '../types/alert';
@@ -23,14 +23,14 @@ export function MyAlertsPage() {
     setSelectedAlert(alert);
   };
 
-  const filteredAlerts = alerts.filter(alert => {
+  const filteredAlerts = useMemo(() => alerts.filter(alert => {
     if (activeTab === 'All') return true;
     if (activeTab === 'Active') return alert.status !== 'RESOLVED';
     if (activeTab === 'In Progress') return alert.status === 'IN_PROGRESS';
     if (activeTab === 'At Risk') return alert.slaStatus === 'AT_RISK' && alert.status !== 'RESOLVED';
     if (activeTab === 'Escalated') return alert.escalated;
     return true;
-  });
+  }), [alerts, activeTab]);
 
   const tabs = [
     { id: 'All', label: 'All', count: alerts.length, color: 'bg-primary/20 text-primary', activeColor: 'bg-primary text-primary-foreground' },
