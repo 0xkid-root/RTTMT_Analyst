@@ -43,9 +43,16 @@ const fetchAlerts = async (filters?: AlertFilters): Promise<Alert[]> => {
   return filtered;
 };
 
+export const EMPTY_ALERTS: Alert[] = [];
+
 export function useAlerts(filters?: AlertFilters) {
-  return useQuery({
+  const query = useQuery({
     queryKey: ['alerts', filters],
     queryFn: () => fetchAlerts(filters),
   });
+
+  return {
+    ...query,
+    data: query.data ?? EMPTY_ALERTS,
+  };
 }
