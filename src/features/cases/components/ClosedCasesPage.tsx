@@ -1,12 +1,14 @@
 'use client';
 
+import { useMemo } from 'react';
+
 import { useCaseStore } from '@/features/cases/store/useCaseStore';
 import { CasesTable } from '@/features/cases/components/CasesTable';
 import { CheckSquare } from 'lucide-react';
 
 export function ClosedCasesPage() {
   const cases = useCaseStore(state => state.cases);
-  const closedCases = cases.filter(c => c.status === 'CLOSED');
+  const closedCases = useMemo(() => cases.filter(c => c.status === 'CLOSED'), [cases]);
   
   return (
     <div className="flex-1 overflow-auto p-6 max-w-[1600px] mx-auto w-full flex flex-col h-full">
