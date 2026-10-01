@@ -10,7 +10,7 @@ export function AuthLayout({ children }: { children: React.ReactNode }) {
           <AuthLogo className="mb-8" />
           <div className="hidden md:block max-w-sm space-y-4">
             <h1 className="text-3xl font-bold tracking-tight text-foreground">
-              Real-Time Monitoring & Threat Intelligence
+              Real Time Transaction Monitoring and Threat Intelligence
             </h1>
             <p className="text-muted-foreground text-lg leading-relaxed">
               Enterprise-grade financial risk monitoring, fraud detection, and alerting for analysts and security teams.

@@ -44,7 +44,7 @@ export function LoginForm() {
     <div className="space-y-6">
       <div className="space-y-2">
         <h2 className="text-2xl font-bold tracking-tight">Welcome back</h2>
-        <p className="text-sm text-muted-foreground">Sign in to access the RTMT risk monitoring platform.</p>
+        <p className="text-sm text-muted-foreground">Sign in to access the RTTMT risk monitoring platform.</p>
       </div>
 
       <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
