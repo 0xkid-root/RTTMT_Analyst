@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useEffect, useRef } from 'react';
+import { useState, useEffect, useRef, useMemo } from 'react';
 import {
   useReactTable,
   getCoreRowModel,
@@ -37,13 +37,13 @@ export function LiveTransactionsTable({
   // Track previous transactions length to detect new arrivals
   const prevLengthRef = useRef(transactions.length);
 
-  const filtered = transactions.filter(t => {
+  const filtered = useMemo(() => transactions.filter(t => {
     if (!searchTerm) return true;
     const term = searchTerm.toLowerCase();
     return t.id.toLowerCase().includes(term) || 
            t.merchant.toLowerCase().includes(term) || 
            t.accountReference.toLowerCase().includes(term);
-  });
+  }), [transactions, searchTerm]);
 
   const table = useReactTable({
     data: filtered,
