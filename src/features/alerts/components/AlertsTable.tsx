@@ -1,6 +1,6 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useMemo } from 'react';
 import {
   useReactTable,
   getCoreRowModel,
@@ -46,9 +46,10 @@ export function AlertsTable({
   const [sorting, setSorting] = useState<SortingState>([]);
   const [rowSelection, setRowSelection] = useState({});
   const [columnVisibility, setColumnVisibility] = useState<VisibilityState>(initialVisibility);
+  const memoizedData = useMemo(() => alerts, [alerts]);
 
   const table = useReactTable({
-    data: alerts,
+    data: memoizedData,
     columns: alertsColumns,
     getCoreRowModel: getCoreRowModel(),
     getPaginationRowModel: getPaginationRowModel(),
