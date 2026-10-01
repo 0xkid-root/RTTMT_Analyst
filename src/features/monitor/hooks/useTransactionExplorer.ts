@@ -37,18 +37,17 @@ const fetchExplorerTransactions = async (filters: FilterState): Promise<Transact
   });
 };
 
+export const EMPTY_TRANSACTIONS: Transaction[] = [];
+
 export function useTransactionExplorer(filters: FilterState) {
-  const { data: transactions = [], isLoading, isError, error, refetch } = useQuery({
+  const query = useQuery({
     queryKey: ['explorer-transactions', filters],
     queryFn: () => fetchExplorerTransactions(filters),
     staleTime: 1000 * 60 * 5, // 5 minutes
   });
 
   return {
-    transactions,
-    isLoading,
-    isError,
-    error,
-    refetch
+    ...query,
+    transactions: query.data ?? EMPTY_TRANSACTIONS,
   };
 }
