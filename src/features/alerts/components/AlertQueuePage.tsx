@@ -1,6 +1,6 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useMemo } from 'react';
 import { AlertsTable } from './AlertsTable';
 import { useAlerts } from '../hooks/useAlerts';
 import { Alert } from '../types/alert';
@@ -24,14 +24,14 @@ export function AlertQueuePage() {
     setSelectedAlert(alert);
   };
 
-  const filteredAlerts = alerts.filter(alert => {
+  const filteredAlerts = useMemo(() => alerts.filter(alert => {
     if (activeTab === 'All') return true;
     if (activeTab === 'Critical') return alert.severity === 'CRITICAL';
     if (activeTab === 'High') return alert.severity === 'HIGH';
     if (activeTab === 'Medium') return alert.severity === 'MEDIUM';
     if (activeTab === 'Low') return alert.severity === 'LOW';
     return true;
-  });
+  }), [alerts, activeTab]);
 
   const tabs = [
     { id: 'All', label: 'All', count: activeAlertsCount, color: 'bg-primary/20 text-primary', activeColor: 'bg-primary text-primary-foreground' },
