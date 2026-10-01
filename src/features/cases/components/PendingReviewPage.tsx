@@ -1,12 +1,14 @@
 'use client';
 
+import { useMemo } from 'react';
+
 import { useCaseStore } from '@/features/cases/store/useCaseStore';
 import { CasesTable } from '@/features/cases/components/CasesTable';
 import { FileText } from 'lucide-react';
 
 export function PendingReviewPage() {
   const cases = useCaseStore(state => state.cases);
-  const pendingCases = cases.filter(c => c.status === 'IN_REVIEW');
+  const pendingCases = useMemo(() => cases.filter(c => c.status === 'IN_REVIEW'), [cases]);
   
   return (
     <div className="flex-1 overflow-auto p-6 max-w-[1600px] mx-auto w-full flex flex-col h-full">
