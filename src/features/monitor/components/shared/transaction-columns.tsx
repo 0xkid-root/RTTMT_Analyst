@@ -123,7 +123,7 @@ export const liveColumns = [
   }),
   columnHelper.accessor('riskLevel', {
     header: () => <div className="text-center">Risk</div>,
-    cell: (info) => <div className="text-center whitespace-nowrap"><RiskBadge level={info.getValue()} /></div>
+    cell: (info) => <div className="text-center whitespace-nowrap"><div className="inline-block risk-badge-animated"><RiskBadge level={info.getValue()} /></div></div>
   }),
   columnHelper.accessor('maliScore', {
     header: () => <div className="text-center">MALi</div>,
@@ -131,7 +131,7 @@ export const liveColumns = [
       const score = info.getValue();
       return (
         <div className="text-center whitespace-nowrap">
-          <span className={`font-mono font-semibold ${score >= 80 ? 'text-red-500' : score >= 60 ? 'text-orange-500' : 'text-foreground'}`}>
+          <span className={`risk-score-animated inline-block font-mono font-semibold ${score >= 80 ? 'text-red-500' : score >= 60 ? 'text-orange-500' : 'text-foreground'}`}>
             {score}
           </span>
         </div>

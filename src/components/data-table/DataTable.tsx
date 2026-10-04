@@ -5,16 +5,20 @@ import {
   Table as TanStackTable,
 } from '@tanstack/react-table';
 
+import { Row } from '@tanstack/react-table';
+
 interface DataTableProps<TData> {
   table: TanStackTable<TData>;
   onRowClick?: (row: TData) => void;
   emptyMessage?: string;
+  getRowProps?: (row: Row<TData>) => React.HTMLAttributes<HTMLTableRowElement>;
 }
 
 export function DataTable<TData>({
   table,
   onRowClick,
   emptyMessage = 'No data available.',
+  getRowProps,
 }: DataTableProps<TData>) {
   return (
     <div className="bg-card border border-border rounded-xl shadow-sm">
@@ -57,7 +61,8 @@ export function DataTable<TData>({
                 <tr
                   key={row.id}
                   onClick={() => onRowClick && onRowClick(row.original)}
-                  className={`transition-colors hover:bg-muted/50 ${onRowClick ? 'cursor-pointer' : ''}`}
+                  {...(getRowProps ? getRowProps(row) : {})}
+                  className={`transition-colors hover:bg-muted/50 ${onRowClick ? 'cursor-pointer' : ''} ${getRowProps?.(row).className || ''}`}
                 >
                   {row.getVisibleCells().map((cell) => (
                     <td key={cell.id} className="px-4 py-3 whitespace-nowrap">

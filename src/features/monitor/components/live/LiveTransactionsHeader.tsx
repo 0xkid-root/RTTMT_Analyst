@@ -1,5 +1,6 @@
 import { Button } from '@/components/ui/button';
 import { Pause, Play, RefreshCw, Activity } from 'lucide-react';
+import { useAnimatedNumber } from '@/hooks/useAnimatedNumber';
 
 interface LiveTransactionsHeaderProps {
   isPaused: boolean;
@@ -9,15 +10,16 @@ interface LiveTransactionsHeaderProps {
 }
 
 export function LiveTransactionsHeader({ isPaused, onTogglePause, onRefresh, transactionsPerMinute }: LiveTransactionsHeaderProps) {
+  const animatedTxnPerMin = useAnimatedNumber(transactionsPerMinute, 300); // Fast transition
+
   return (
     <div className="flex flex-col sm:flex-row justify-between items-start sm:items-end gap-4 mb-6">
       <div>
         <h1 className="text-3xl font-bold tracking-tight mb-1 text-foreground flex items-center gap-2">
           Live Transactions
           {!isPaused && (
-            <span className="relative flex h-3 w-3 ml-2">
-              <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-red-400 opacity-75"></span>
-              <span className="relative inline-flex rounded-full h-3 w-3 bg-red-500"></span>
+            <span className="relative flex h-2.5 w-2.5 ml-2 items-center justify-center">
+              <span className="live-dot-ambient absolute inline-flex h-full w-full rounded-full bg-red-500"></span>
             </span>
           )}
         </h1>
@@ -28,12 +30,12 @@ export function LiveTransactionsHeader({ isPaused, onTogglePause, onRefresh, tra
 
       <div className="flex items-center gap-4">
         <div className="flex items-center gap-2 px-3 py-1.5 bg-card border border-border rounded-md shadow-sm">
-          <Activity className={`w-4 h-4 ${isPaused ? 'text-muted-foreground' : 'text-red-500'}`} />
+          <Activity className={`w-4 h-4 ${isPaused ? 'text-muted-foreground' : 'text-red-500 live-dot-ambient'}`} />
           <span className="text-sm font-medium">
             {isPaused ? 'STREAM PAUSED' : 'LIVE'}
           </span>
-          <span className="text-muted-foreground text-xs ml-2 border-l border-border pl-2">
-            {transactionsPerMinute.toLocaleString()} txn/min
+          <span className="text-muted-foreground text-xs ml-2 border-l border-border pl-2 tabular-nums">
+            {animatedTxnPerMin.toLocaleString()} txn/min
           </span>
         </div>
 

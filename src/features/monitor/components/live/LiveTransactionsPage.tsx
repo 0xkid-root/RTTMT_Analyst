@@ -8,6 +8,7 @@ import { LiveTransactionsTable } from './LiveTransactionsTable';
 import { TransactionDetailsDrawer } from '../shared/TransactionDetailsDrawer';
 import { Transaction } from '../../types/transaction';
 import { useLiveTransactions } from '../../hooks/useLiveTransactions';
+import './live-animations.css';
 
 export function LiveTransactionsPage() {
   const [isPaused, setIsPaused] = useState(false);
