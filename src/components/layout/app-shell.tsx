@@ -3,7 +3,7 @@
 import { useState, useEffect } from 'react';
 import { Sidebar } from '@/components/layout/sidebar';
 import { Header } from '@/components/layout/header';
-
+import { Footer } from '@/components/layout/footer';
 export function AppShell({ children }: { children: React.ReactNode }) {
   const [isSidebarCollapsed, setIsSidebarCollapsed] = useState(false);
 
@@ -26,8 +26,11 @@ export function AppShell({ children }: { children: React.ReactNode }) {
       <Sidebar isCollapsed={isSidebarCollapsed} onToggle={toggleSidebar} />
       <div className={`flex flex-1 flex-col transition-all duration-300 w-full overflow-hidden ${isSidebarCollapsed ? 'pl-16' : 'pl-64'}`}>
         <Header />
-        <main className="flex-1 overflow-auto p-6 bg-muted/20">
-          {children}
+        <main className="flex-1 overflow-auto bg-muted/20 flex flex-col">
+          <div className="flex-1 p-6">
+            {children}
+          </div>
+          <Footer />
         </main>
       </div>
     </div>
