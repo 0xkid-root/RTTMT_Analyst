@@ -1,6 +1,7 @@
 import { clsx, type ClassValue } from 'clsx';
 import { twMerge } from 'tailwind-merge';
 import type { RecentAlert } from '../types/command-center-types';
+import { HoverBorderRay } from './HoverBorderRay';
 
 function cn(...inputs: ClassValue[]) {
   return twMerge(clsx(inputs));
@@ -12,13 +13,14 @@ interface RecentAlertsTableProps {
 
 export function RecentAlertsTable({ data }: RecentAlertsTableProps) {
   return (
-    <div className="bg-background border border-border rounded-xl shadow-sm h-full flex flex-col min-h-[250px]">
-      <div className="p-4 border-b border-border bg-muted/10 flex justify-between items-center">
+    <div className="relative group overflow-hidden bg-background border border-border rounded-xl shadow-sm h-full flex flex-col min-h-[250px] transition-all duration-300 motion-safe:hover:-translate-y-[1px] motion-safe:hover:bg-foreground/[0.02] motion-safe:hover:border-foreground/15 motion-safe:hover:shadow-[-8px_0_24px_-4px_rgba(0,0,0,0.4)]">
+      <HoverBorderRay />
+      <div className="p-4 border-b border-border bg-muted/10 flex justify-between items-center relative z-10">
         <h3 className="font-semibold text-foreground">Recent Alerts</h3>
         <button className="text-xs text-primary hover:underline font-medium">View all →</button>
       </div>
       
-      <div className="flex-1 overflow-x-auto">
+      <div className="flex-1 overflow-x-auto relative z-10">
         <table className="w-full text-sm text-left">
           <thead className="text-xs text-muted-foreground bg-background border-b border-border">
             <tr>

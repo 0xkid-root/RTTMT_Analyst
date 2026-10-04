@@ -1,5 +1,6 @@
 import { Lock, Monitor, Globe, Shield, Users } from 'lucide-react';
 import { Fragment } from 'react';
+import { HoverBorderRay } from './HoverBorderRay';
 import type { RuleTrigger } from '../types/command-center-types';
 
 interface TopRulesListProps {
@@ -19,13 +20,14 @@ export function TopRulesList({ data }: TopRulesListProps) {
   };
 
   return (
-    <div className="bg-background border border-border rounded-xl shadow-sm p-4 h-full flex flex-col min-h-[220px]">
-      <div className="flex justify-between items-center mb-4">
+    <div className="relative group overflow-hidden bg-background border border-border rounded-xl p-4 h-full flex flex-col min-h-[220px] transition-all duration-300 motion-safe:hover:-translate-y-[1px] motion-safe:hover:bg-foreground/[0.02] motion-safe:hover:border-foreground/15 shadow-sm motion-safe:hover:shadow-[-8px_0_24px_-4px_rgba(0,0,0,0.4)]">
+      <HoverBorderRay />
+      <div className="flex justify-between items-center mb-4 relative z-10">
         <h3 className="font-semibold text-foreground">Top Triggered Rules</h3>
         <button className="text-xs text-primary hover:underline font-medium">View all →</button>
       </div>
 
-      <div className="grid grid-cols-[auto_1fr_auto] gap-x-4 gap-y-4 items-center">
+      <div className="grid grid-cols-[auto_1fr_auto] gap-x-4 gap-y-4 items-center relative z-10">
         <div className="col-span-2 text-xs font-medium text-muted-foreground">Rule Name</div>
         <div className="text-xs font-medium text-muted-foreground text-right">Hits (24h)</div>
 

@@ -1,5 +1,6 @@
 import { useMemo } from 'react';
 import { BaseChart } from '@/components/charts/base-chart';
+import { HoverBorderRay } from './HoverBorderRay';
 import type { EChartsOption } from 'echarts';
 import type { MaliScoreDistribution } from '../types/command-center-types';
 
@@ -71,9 +72,10 @@ export function MaliScoreChart({ data }: MaliScoreChartProps) {
   }, [data]);
 
   return (
-    <div className="bg-background border border-border rounded-xl shadow-sm p-4 flex flex-col h-full min-h-[200px]">
-      <h3 className="font-semibold text-foreground mb-2">MALi Score Distribution</h3>
-      <div className="flex-1 -mx-2">
+    <div className="relative group overflow-hidden bg-background border border-border rounded-xl p-4 flex flex-col h-full min-h-[200px] transition-all duration-300 motion-safe:hover:-translate-y-[1px] motion-safe:hover:bg-foreground/[0.02] motion-safe:hover:border-foreground/15 shadow-sm motion-safe:hover:shadow-[-8px_0_24px_-4px_rgba(0,0,0,0.4)]">
+      <HoverBorderRay />
+      <h3 className="font-semibold text-foreground mb-2 relative z-10">MALi Score Distribution</h3>
+      <div className="flex-1 -mx-2 relative z-10">
         <BaseChart option={option} height="100%" />
       </div>
     </div>
