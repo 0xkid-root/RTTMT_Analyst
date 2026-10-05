@@ -20,7 +20,7 @@ export function RiskSummary({ data }: RiskSummaryProps) {
         liveTone="success"
         icon={<ArrowLeftRight className="h-5 w-5 text-primary" />}
       />
-      
+
       <RiskKpiCard
         index={1}
         title="High Risk Transactions"
@@ -32,7 +32,7 @@ export function RiskSummary({ data }: RiskSummaryProps) {
         liveTone="danger"
         icon={<AlertTriangle className="h-5 w-5 text-danger" />}
       />
-      
+
       <RiskKpiCard
         index={2}
         title="Open Alerts"
@@ -44,7 +44,7 @@ export function RiskSummary({ data }: RiskSummaryProps) {
         liveTone="danger"
         icon={<Bell className="h-5 w-5 text-danger" />}
       />
-      
+
       <RiskKpiCard
         index={3}
         title="Open Cases"
@@ -54,7 +54,7 @@ export function RiskSummary({ data }: RiskSummaryProps) {
         trendTone={data.openCases.trendPercent >= 0 ? "negative" : "positive"}
         icon={<FolderOpen className="h-5 w-5 text-warning" />}
       />
-      
+
       <RiskKpiCard
         index={4}
         title="Resolved Today"
