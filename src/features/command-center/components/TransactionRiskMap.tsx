@@ -65,9 +65,9 @@ export default function TransactionRiskMap({ className = "", locations = [], edg
         const target = locations.find(l => l.id === edge.targetId);
         if (!source || !target) return;
 
-        const color = source.riskLevel === 'CRITICAL' ? '#EF4444' : 
-                      source.riskLevel === 'HIGH' ? '#F97316' : 
-                      source.riskLevel === 'MEDIUM' ? '#F59E0B' : '#22C55E';
+        const color = source.riskLevel === 'CRITICAL' ? '#EF4444' :
+          source.riskLevel === 'HIGH' ? '#F97316' :
+            source.riskLevel === 'MEDIUM' ? '#F59E0B' : '#22C55E';
 
         L.polyline([
           [source.latitude, source.longitude],
@@ -84,9 +84,9 @@ export default function TransactionRiskMap({ className = "", locations = [], edg
     // 1 & 2. Risk points, glows, and permanent popups
     if (locations.length > 0) {
       locations.forEach(point => {
-        const riskColor = point.riskLevel === 'CRITICAL' ? '#EF4444' : 
-                          point.riskLevel === 'HIGH' ? '#F97316' : 
-                          point.riskLevel === 'MEDIUM' ? '#F59E0B' : '#22C55E';
+        const riskColor = point.riskLevel === 'CRITICAL' ? '#EF4444' :
+          point.riskLevel === 'HIGH' ? '#F97316' :
+            point.riskLevel === 'MEDIUM' ? '#F59E0B' : '#22C55E';
 
         // Add inner/outer glow circles
         const radiusMap = {
@@ -95,7 +95,7 @@ export default function TransactionRiskMap({ className = "", locations = [], edg
           'MEDIUM': 18,
           'LOW': 14
         };
-        
+
         // Outer glow
         L.circleMarker([point.latitude, point.longitude], {
           radius: radiusMap[point.riskLevel as keyof typeof radiusMap] || 12,
@@ -150,13 +150,13 @@ export default function TransactionRiskMap({ className = "", locations = [], edg
     // 3. Simulated live transactions (Blink Effect)
     const triggerBlink = () => {
       if (!newMap || !locations.length) return;
-      
+
       const randomLoc = locations[Math.floor(Math.random() * locations.length)];
-      
-      const color = randomLoc.riskLevel === 'CRITICAL' ? '#EF4444' : 
-                    randomLoc.riskLevel === 'HIGH' ? '#F97316' : 
-                    randomLoc.riskLevel === 'MEDIUM' ? '#F59E0B' : '#22C55E';
-                    
+
+      const color = randomLoc.riskLevel === 'CRITICAL' ? '#EF4444' :
+        randomLoc.riskLevel === 'HIGH' ? '#F97316' :
+          randomLoc.riskLevel === 'MEDIUM' ? '#F59E0B' : '#22C55E';
+
       const blinkIcon = L.divIcon({
         className: 'rttmt-blink-container',
         html: `<div class="rttmt-blink-marker" style="background-color: ${color}; box-shadow: 0 0 10px ${color}, 0 0 20px ${color};"></div>`,
@@ -165,7 +165,7 @@ export default function TransactionRiskMap({ className = "", locations = [], edg
       });
 
       const marker = L.marker([randomLoc.latitude, randomLoc.longitude], { icon: blinkIcon, interactive: false }).addTo(newMap);
-        
+
       setTimeout(() => {
         if (newMap.hasLayer(marker)) {
           newMap.removeLayer(marker);
@@ -195,7 +195,8 @@ export default function TransactionRiskMap({ className = "", locations = [], edg
 
   return (
     <div className={cn("relative w-full h-full overflow-hidden bg-background z-0 isolate", className)}>
-      <style dangerouslySetInnerHTML={{__html: `
+      <style dangerouslySetInnerHTML={{
+        __html: `
         .leaflet-container {
           background: #000;
           font-family: inherit;
