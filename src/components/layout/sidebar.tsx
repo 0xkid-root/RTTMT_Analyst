@@ -94,8 +94,9 @@ const NAV_CATEGORIES: Category[] = [
     label: 'Investigations', 
     icon: FileSearch,
     subItems: [
-      { label: 'Investigation Queue', href: '/investigations/queue', icon: List },
-      { label: 'My Investigations', href: '/investigations/my-investigations', icon: Search },
+      { label: 'All Investigations', href: '/investigations/all', icon: List },
+      { label: 'My Investigations', href: '/investigations/my', icon: Search },
+      { label: 'Resolved Investigations', href: '/investigations/resolved', icon: CheckSquare },
     ]
   },
   { 
@@ -275,9 +276,18 @@ export function Sidebar({ isCollapsed = false, onToggle }: SidebarProps) {
               </button>
               
               {isExpanded && !isCollapsed && (
-                <div className="flex flex-col mt-1 mb-1 ml-5 pl-4 border-l border-sidebar-border space-y-1">
+                <div className="flex flex-col mt-1 mb-1 ml-5 pl-4 border-l border-sidebar-border space-y-1 relative">
+                  {/* AI Scanning Indicator specifically for Investigations */}
+                  {category.label === 'Investigations' && (
+                    <div className="absolute left-[-1px] top-0 bottom-0 w-[2px] pointer-events-none overflow-hidden">
+                      <div className="absolute top-0 left-0 w-full h-[40px] bg-gradient-to-b from-transparent via-primary/80 to-transparent blur-[1px] animate-investigation-scan" />
+                    </div>
+                  )}
                   {category.subItems.map((subItem) => {
                     const isChildActive = pathname === subItem.href;
+                    // For Investigations, add a subtle active state animation class
+                    const isInvestigationsChild = category.label === 'Investigations';
+                    
                     return (
                       <Link
                         key={subItem.label}
@@ -286,11 +296,21 @@ export function Sidebar({ isCollapsed = false, onToggle }: SidebarProps) {
                           "relative group overflow-hidden flex items-center gap-3 px-3 py-1.5 rounded-md text-xs font-medium transition-colors",
                           isChildActive 
                             ? "bg-sidebar-accent/50 text-sidebar-accent-foreground" 
-                            : "text-sidebar-foreground/60 hover:text-sidebar-foreground hover:bg-sidebar-accent/30"
+                            : "text-sidebar-foreground/60 hover:text-sidebar-foreground hover:bg-sidebar-accent/30",
+                          isInvestigationsChild && "hover:bg-primary/5 transition-all duration-300"
                         )}
                       >
-                        <HoverBorderRay borderRadius="rounded-md" />
-                        <subItem.icon className="h-3.5 w-3.5 shrink-0 opacity-70 relative z-10" />
+                        {isInvestigationsChild && (isChildActive || true) && (
+                          <div className="absolute inset-0 pointer-events-none opacity-0 group-hover:opacity-100 transition-opacity duration-700">
+                             <div className="absolute top-0 left-0 w-full h-[1px] bg-gradient-to-r from-primary/0 via-primary/30 to-primary/0" />
+                             <div className="absolute bottom-0 left-0 w-full h-[1px] bg-gradient-to-r from-primary/0 via-primary/30 to-primary/0" />
+                          </div>
+                        )}
+                        {!isInvestigationsChild && <HoverBorderRay borderRadius="rounded-md" />}
+                        <subItem.icon className={cn(
+                          "h-3.5 w-3.5 shrink-0 opacity-70 relative z-10 transition-colors duration-300",
+                          isInvestigationsChild && "group-hover:text-primary"
+                        )} />
                         <span className="relative z-10">{subItem.label}</span>
                       </Link>
                     );

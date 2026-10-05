@@ -37,10 +37,10 @@ export function HoverBorderRay({ borderRadius = 'rounded-xl' }: HoverBorderRayPr
       }}
     >
       <div 
-        className="absolute inset-[-100%] text-primary"
+        className="absolute inset-[-100%] text-primary/40"
         style={{ 
-          animation: 'spin 3s linear infinite',
-          background: 'conic-gradient(from 0deg, transparent 0 340deg, currentColor 360deg)' 
+          animation: 'spin 3.5s linear infinite',
+          background: 'conic-gradient(from 0deg, transparent 0 352deg, currentColor 360deg)' 
         }}
       />
     </div>

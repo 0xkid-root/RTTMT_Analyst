@@ -107,7 +107,7 @@ export function RiskKpiCard({
         {icon && (
           <div className={cn(
             "h-8 w-8 rounded-full flex items-center justify-center bg-muted transition-transform",
-            !isReducedMotion ? "duration-300 group-hover:scale-[1.03]" : ""
+            !isReducedMotion ? "duration-200 group-hover:scale-[1.02] group-hover:-translate-y-[2px]" : ""
           )}>
             {icon}
           </div>
@@ -145,8 +145,8 @@ export function RiskKpiCard({
 
       <div className="relative z-10">
         <div className={cn(
-          "text-2xl font-bold tracking-tight transition-colors tabular-nums",
-          !isReducedMotion ? "duration-500" : "",
+          "text-2xl font-bold tracking-tight transition-all tabular-nums",
+          !isReducedMotion ? "duration-200 group-hover:drop-shadow-sm group-hover:opacity-100 opacity-95" : "",
           isUpdating && !isReducedMotion ? "text-primary" : "text-foreground"
         )}>
           {animatedValue.toLocaleString()}
