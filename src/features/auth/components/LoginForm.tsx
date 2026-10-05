@@ -8,9 +8,9 @@ import { useRouter } from 'next/navigation';
 import { loginSchema, type LoginFormData } from '../schemas/auth-schemas';
 import { PasswordInput } from './PasswordInput';
 import { Loader2 } from 'lucide-react';
-import { motion, AnimatePresence } from 'framer-motion';
+import { motion, AnimatePresence, type Variants } from 'framer-motion';
 
-const containerVariants = {
+const containerVariants: Variants = {
   hidden: { opacity: 0 },
   visible: {
     opacity: 1,
@@ -21,7 +21,7 @@ const containerVariants = {
   }
 };
 
-const itemVariants = {
+const itemVariants: Variants = {
   hidden: { opacity: 0, y: 15 },
   visible: { 
     opacity: 1, 
@@ -34,7 +34,7 @@ const itemVariants = {
   }
 };
 
-const errorVariants = {
+const errorVariants: Variants = {
   hidden: { opacity: 0, height: 0, scale: 0.95 },
   visible: { 
     opacity: 1, 
