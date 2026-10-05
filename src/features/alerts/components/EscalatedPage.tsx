@@ -5,6 +5,7 @@ import { AlertsTable } from './AlertsTable';
 import { useAlerts } from '../hooks/useAlerts';
 import { Alert } from '../types/alert';
 import { AlertDetailsDrawer } from './AlertDetailsDrawer';
+import { RiskKpiCard } from '@/features/command-center/components/RiskKpiCard';
 
 export function EscalatedPage() {
   const [searchQuery, setSearchQuery] = useState('');
@@ -22,18 +23,9 @@ export function EscalatedPage() {
 
   const SummaryCards = (
     <div className="grid grid-cols-3 gap-4">
-      <div className="bg-card border border-orange-500/30 p-4 rounded-xl shadow-sm">
-        <div className="text-sm text-orange-500 font-medium mb-1">Escalated Alerts</div>
-        <div className="text-2xl font-bold">{activeEscalated}</div>
-      </div>
-      <div className="bg-card border border-red-500/30 p-4 rounded-xl shadow-sm">
-        <div className="text-sm text-red-500 font-medium mb-1">Critical Priority</div>
-        <div className="text-2xl font-bold">{criticalEscalated}</div>
-      </div>
-      <div className="bg-card border border-border p-4 rounded-xl shadow-sm">
-        <div className="text-sm text-muted-foreground font-medium mb-1">Awaiting Review</div>
-        <div className="text-2xl font-bold">{awaitingReview}</div>
-      </div>
+      <RiskKpiCard title="Escalated Alerts" value={activeEscalated} index={0} isLive={activeEscalated > 0} liveTone="danger" />
+      <RiskKpiCard title="Critical Priority" value={criticalEscalated} index={1} isLive={criticalEscalated > 0} liveTone="danger" />
+      <RiskKpiCard title="Awaiting Review" value={awaitingReview} index={2} />
     </div>
   );
 

@@ -30,8 +30,8 @@ export function HoverBorderRay({ borderRadius = 'rounded-xl' }: HoverBorderRayPr
         borderRadius
       )}
       style={{
-        padding: '1px',
-        WebkitMask: 'linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0)',
+        border: '1px solid transparent',
+        WebkitMask: 'linear-gradient(#fff 0 0) padding-box, linear-gradient(#fff 0 0)',
         WebkitMaskComposite: 'xor',
         maskComposite: 'exclude',
       }}

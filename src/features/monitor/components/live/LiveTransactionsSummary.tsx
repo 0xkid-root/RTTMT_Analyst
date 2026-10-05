@@ -87,7 +87,7 @@ interface LiveTransactionsSummaryProps {
 
 export function LiveTransactionsSummary({ stats }: LiveTransactionsSummaryProps) {
   return (
-    <div className="grid grid-cols-2 md:grid-cols-5 gap-4 mb-6">
+    <div className="grid grid-cols-2 md:grid-cols-5 gap-4 mb-4">
       <SummaryCard title="Transactions / min" value={stats.transactionsPerMin.toLocaleString()} trend={4.2} />
       <SummaryCard title="High Risk" value={stats.highRisk.toLocaleString()} trend={1.5} isNegativeGood />
       <SummaryCard title="Critical" value={stats.critical.toLocaleString()} trend={-2.1} isNegativeGood />

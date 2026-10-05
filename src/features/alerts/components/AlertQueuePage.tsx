@@ -5,6 +5,7 @@ import { AlertsTable } from './AlertsTable';
 import { useAlerts } from '../hooks/useAlerts';
 import { Alert } from '../types/alert';
 import { AlertDetailsDrawer } from './AlertDetailsDrawer';
+import { RiskKpiCard } from '@/features/command-center/components/RiskKpiCard';
 
 export function AlertQueuePage() {
   const [searchQuery, setSearchQuery] = useState('');
@@ -44,22 +45,22 @@ export function AlertQueuePage() {
   const SummaryCards = (
     <div className="flex flex-col gap-6">
       <div className="grid grid-cols-4 gap-4">
-        <div className="bg-card border border-border p-4 rounded-xl shadow-sm">
-          <div className="text-sm text-muted-foreground font-medium mb-1">Active Alerts</div>
-          <div className="text-2xl font-bold">{activeAlertsCount}</div>
-        </div>
-        <div className="bg-card border border-red-500/30 p-4 rounded-xl shadow-sm">
-          <div className="text-sm text-red-500 font-medium mb-1">Critical</div>
-          <div className="text-2xl font-bold">{criticalCount}</div>
-        </div>
-        <div className="bg-card border border-orange-500/30 p-4 rounded-xl shadow-sm">
-          <div className="text-sm text-orange-500 font-medium mb-1">High Risk</div>
-          <div className="text-2xl font-bold">{highRiskCount}</div>
-        </div>
-        <div className="bg-card border border-border p-4 rounded-xl shadow-sm">
-          <div className="text-sm text-muted-foreground font-medium mb-1">SLA Breached</div>
-          <div className="text-2xl font-bold">{slaBreached}</div>
-        </div>
+        <RiskKpiCard title="Active Alerts" value={activeAlertsCount} index={0} />
+        <RiskKpiCard 
+          title="Critical" 
+          value={criticalCount} 
+          index={1} 
+          isLive={criticalCount > 0} 
+          liveTone="danger" 
+        />
+        <RiskKpiCard 
+          title="High Risk" 
+          value={highRiskCount} 
+          index={2} 
+          isLive={highRiskCount > 0} 
+          liveTone="warning" 
+        />
+        <RiskKpiCard title="SLA Breached" value={slaBreached} index={3} />
       </div>
 
       <div className="flex items-center gap-3">

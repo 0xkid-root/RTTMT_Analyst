@@ -15,6 +15,7 @@ import { DataTable, DataTablePagination, DataTableColumnVisibility } from '@/com
 import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
 import { RefreshCw, Download, Search, ChevronDown, Filter, SlidersHorizontal } from 'lucide-react';
+import { StaggerContainer, StaggerItem } from '@/components/animations/Stagger';
 
 interface AlertsTableProps {
   alerts: Alert[];
@@ -70,8 +71,8 @@ export function AlertsTable({
   });
 
   return (
-    <div className="flex flex-col space-y-6">
-      <div className="flex items-center justify-between">
+    <StaggerContainer className="flex flex-col space-y-6 pb-6">
+      <StaggerItem className="flex items-center justify-between">
         <div>
           <h1 className="text-2xl font-bold tracking-tight">{title}</h1>
           <p className="text-muted-foreground">{subtitle}</p>
@@ -92,15 +93,15 @@ export function AlertsTable({
             Refresh
           </Button>
         </div>
-      </div>
+      </StaggerItem>
 
       {summaryCards && (
-        <div className="w-full">
+        <StaggerItem className="w-full">
           {summaryCards}
-        </div>
+        </StaggerItem>
       )}
 
-      <div className="flex flex-wrap items-center gap-3 w-full pb-2">
+      <StaggerItem className="flex flex-wrap items-center gap-3 w-full pb-2">
         <div className="relative w-[280px] shrink-0">
           <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
           <Input 
@@ -148,15 +149,19 @@ export function AlertsTable({
         <div className="flex items-center gap-2 ml-auto shrink-0">
           <DataTableColumnVisibility table={table} />
         </div>
-      </div>
+      </StaggerItem>
 
-      <DataTable 
-        table={table} 
-        onRowClick={onAlertClick} 
-        emptyMessage={isLoading ? "Loading alerts..." : "No alerts found matching your criteria."} 
-      />
+      <StaggerItem>
+        <DataTable 
+          table={table} 
+          onRowClick={onAlertClick} 
+          emptyMessage={isLoading ? "Loading alerts..." : "No alerts found matching your criteria."} 
+        />
+      </StaggerItem>
       
-      <DataTablePagination table={table} />
-    </div>
+      <StaggerItem>
+        <DataTablePagination table={table} />
+      </StaggerItem>
+    </StaggerContainer>
   );
 }

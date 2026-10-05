@@ -3,6 +3,7 @@
 import { useState, useMemo } from 'react';
 import { LiveTransactionsHeader } from './LiveTransactionsHeader';
 import { LiveTransactionsSummary } from './LiveTransactionsSummary';
+import { LiveTransactionStack } from './LiveTransactionStack';
 import { LiveTransactionsFilters } from './LiveTransactionsFilters';
 import { LiveTransactionsTable } from './LiveTransactionsTable';
 import { TransactionDetailsDrawer } from '../shared/TransactionDetailsDrawer';
@@ -15,7 +16,7 @@ export function LiveTransactionsPage() {
   const [searchTerm, setSearchTerm] = useState('');
   const [autoScroll, setAutoScroll] = useState(true);
   const [newCount, setNewCount] = useState(0);
-  
+
   const [selectedTransaction, setSelectedTransaction] = useState<Transaction | null>(null);
   const [isDrawerOpen, setIsDrawerOpen] = useState(false);
 
@@ -51,24 +52,28 @@ export function LiveTransactionsPage() {
   };
 
   return (
-    <div className="flex flex-col h-[calc(100vh-6rem)] max-w-[1600px] mx-auto w-full">
-      <LiveTransactionsHeader 
+    <div className="flex flex-col h-full min-h-[calc(100vh-6rem)] max-w-[1600px] mx-auto w-full pb-6">
+      <LiveTransactionsHeader
         isPaused={isPaused}
         onTogglePause={handleTogglePause}
         onRefresh={handleRefresh}
         transactionsPerMinute={stats.transactionsPerMin}
       />
-      
+
       <LiveTransactionsSummary stats={stats} />
-      
-      <LiveTransactionsFilters 
+
+      <div className="w-full flex items-center justify-center z-10 my-10">
+        <LiveTransactionStack transactions={transactions} maxCards={7} onTransactionClick={handleTransactionClick} />
+      </div>
+
+      <LiveTransactionsFilters
         searchTerm={searchTerm}
         onSearchChange={setSearchTerm}
         autoScroll={autoScroll}
         onToggleAutoScroll={handleToggleAutoScroll}
       />
-      
-      <div className="flex-1 min-h-0 relative flex flex-col">
+
+      <div className="flex-1 min-h-[400px] relative flex flex-col">
         {isLoading ? (
           <div className="flex-1 flex items-center justify-center text-muted-foreground border border-border rounded-xl bg-card">
             Connecting to live transaction stream...
@@ -79,7 +84,7 @@ export function LiveTransactionsPage() {
             <button onClick={handleRefresh} className="text-sm underline text-primary">Retry</button>
           </div>
         ) : (
-          <LiveTransactionsTable 
+          <LiveTransactionsTable
             transactions={transactions}
             searchTerm={searchTerm}
             onTransactionClick={handleTransactionClick}
@@ -91,7 +96,7 @@ export function LiveTransactionsPage() {
         )}
       </div>
 
-      <TransactionDetailsDrawer 
+      <TransactionDetailsDrawer
         transaction={selectedTransaction}
         isOpen={isDrawerOpen}
         onClose={() => setIsDrawerOpen(false)}
