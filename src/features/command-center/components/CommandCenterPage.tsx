@@ -54,7 +54,7 @@ export function CommandCenterPage() {
       {/* Row 2: Map (Full Width) */}
       <StaggerItem>
         <div className="w-full h-[500px] xl:h-[600px] rounded-xl overflow-hidden border border-border">
-          <TransactionRiskMap />
+          <TransactionRiskMap locations={mockRiskLocations} edges={mockNetworkEdges} />
         </div>
       </StaggerItem>
 
