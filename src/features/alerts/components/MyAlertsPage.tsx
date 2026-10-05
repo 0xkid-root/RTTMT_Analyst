@@ -5,6 +5,7 @@ import { AlertsTable } from './AlertsTable';
 import { useAlerts } from '../hooks/useAlerts';
 import { Alert } from '../types/alert';
 import { AlertDetailsDrawer } from './AlertDetailsDrawer';
+import { RiskKpiCard } from '@/features/command-center/components/RiskKpiCard';
 
 export function MyAlertsPage() {
   const [searchQuery, setSearchQuery] = useState('');
@@ -43,22 +44,22 @@ export function MyAlertsPage() {
   const SummaryCards = (
     <div className="flex flex-col gap-6">
       <div className="grid grid-cols-4 gap-4">
-        <div className="bg-card border border-border p-4 rounded-xl shadow-sm">
-          <div className="text-sm text-muted-foreground font-medium mb-1">My Active Alerts</div>
-          <div className="text-2xl font-bold">{myActiveAlerts}</div>
-        </div>
-        <div className="bg-card border border-border p-4 rounded-xl shadow-sm">
-          <div className="text-sm text-muted-foreground font-medium mb-1">In Progress</div>
-          <div className="text-2xl font-bold">{inProgress}</div>
-        </div>
-        <div className="bg-card border border-yellow-500/30 p-4 rounded-xl shadow-sm">
-          <div className="text-sm text-yellow-500 font-medium mb-1">SLA At Risk</div>
-          <div className="text-2xl font-bold">{atRisk}</div>
-        </div>
-        <div className="bg-card border border-orange-500/30 p-4 rounded-xl shadow-sm">
-          <div className="text-sm text-orange-500 font-medium mb-1">Escalated</div>
-          <div className="text-2xl font-bold">{escalatedCount}</div>
-        </div>
+        <RiskKpiCard title="My Active Alerts" value={myActiveAlerts} index={0} />
+        <RiskKpiCard title="In Progress" value={inProgress} index={1} />
+        <RiskKpiCard 
+          title="SLA At Risk" 
+          value={atRisk} 
+          index={2}
+          isLive={atRisk > 0}
+          liveTone="warning"
+        />
+        <RiskKpiCard 
+          title="Escalated" 
+          value={escalatedCount} 
+          index={3}
+          isLive={escalatedCount > 0}
+          liveTone="danger"
+        />
       </div>
 
       <div className="flex items-center gap-3">

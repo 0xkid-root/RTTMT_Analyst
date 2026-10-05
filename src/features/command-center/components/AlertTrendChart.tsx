@@ -2,6 +2,7 @@ import { useMemo } from 'react';
 import { BaseChart } from '@/components/charts/base-chart';
 import type { EChartsOption } from 'echarts';
 import type { AlertTrendData } from '../types/command-center-types';
+import { HoverBorderRay } from './HoverBorderRay';
 
 interface AlertTrendChartProps {
   data: AlertTrendData;
@@ -79,12 +80,13 @@ export function AlertTrendChart({ data }: AlertTrendChartProps) {
   }, [data]);
 
   return (
-    <div className="bg-background border border-border rounded-xl shadow-sm p-4 h-full flex flex-col min-h-[250px]">
-      <div className="flex justify-between items-center mb-4">
+    <div className="relative group overflow-hidden bg-background border border-border rounded-xl shadow-sm p-4 h-full flex flex-col min-h-[250px] transition-all duration-300 motion-safe:hover:-translate-y-[1px] motion-safe:hover:bg-foreground/[0.02] motion-safe:hover:border-foreground/15 motion-safe:hover:shadow-[-8px_0_24px_-4px_rgba(0,0,0,0.4)]">
+      <HoverBorderRay />
+      <div className="flex justify-between items-center mb-4 relative z-10">
         <h3 className="font-semibold text-foreground">Alert Trend</h3>
         <button className="text-xs text-primary hover:underline font-medium">View all →</button>
       </div>
-      <div className="flex-1 -mx-2">
+      <div className="flex-1 -mx-2 relative z-10">
         <BaseChart option={option} height="100%" />
       </div>
     </div>

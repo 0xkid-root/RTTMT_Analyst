@@ -8,19 +8,19 @@ const columnHelper = createColumnHelper<Alert>();
 
 export const getSeverityColor = (severity: string) => {
   switch (severity.toLowerCase()) {
-    case 'critical': return 'text-red-500 bg-red-500/10 border-red-500/20';
-    case 'high': return 'text-orange-500 bg-orange-500/10 border-orange-500/20';
-    case 'medium': return 'text-yellow-500 bg-yellow-500/10 border-yellow-500/20';
-    default: return 'text-blue-500 bg-blue-500/10 border-blue-500/20';
+    case 'critical': return 'text-red-500 bg-red-500/10 border-red-500/30 shadow-[0_0_10px_rgba(239,68,68,0.2)]';
+    case 'high': return 'text-orange-500 bg-orange-500/10 border-orange-500/30 shadow-[0_0_10px_rgba(249,115,22,0.2)]';
+    case 'medium': return 'text-yellow-500 bg-yellow-500/10 border-yellow-500/30 shadow-[0_0_10px_rgba(234,179,8,0.2)]';
+    default: return 'text-blue-500 bg-blue-500/10 border-blue-500/30 shadow-[0_0_10px_rgba(59,130,246,0.2)]';
   }
 };
 
 export const getStatusColor = (status: string) => {
   switch (status) {
-    case 'NEW': return 'text-blue-500 bg-blue-500/10 border-blue-500/20';
-    case 'ACKNOWLEDGED': return 'text-purple-500 bg-purple-500/10 border-purple-500/20';
-    case 'IN_PROGRESS': return 'text-yellow-500 bg-yellow-500/10 border-yellow-500/20';
-    case 'RESOLVED': return 'text-green-500 bg-green-500/10 border-green-500/20';
+    case 'NEW': return 'text-blue-500 bg-blue-500/10 border-blue-500/30 shadow-[0_0_10px_rgba(59,130,246,0.2)]';
+    case 'ACKNOWLEDGED': return 'text-purple-500 bg-purple-500/10 border-purple-500/30 shadow-[0_0_10px_rgba(168,85,247,0.2)]';
+    case 'IN_PROGRESS': return 'text-yellow-500 bg-yellow-500/10 border-yellow-500/30 shadow-[0_0_10px_rgba(234,179,8,0.2)]';
+    case 'RESOLVED': return 'text-green-500 bg-green-500/10 border-green-500/30 shadow-[0_0_10px_rgba(34,197,94,0.2)]';
     default: return 'text-muted-foreground bg-muted/50 border-border';
   }
 };

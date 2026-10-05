@@ -1,5 +1,6 @@
 import { useMemo } from 'react';
 import { BaseChart } from '@/components/charts/base-chart';
+import { HoverBorderRay } from './HoverBorderRay';
 import type { EChartsOption } from 'echarts';
 
 interface RiskDistributionChartProps {
@@ -81,9 +82,10 @@ export function RiskDistributionChart({ data }: RiskDistributionChartProps) {
   }, [data]);
 
   return (
-    <div className="bg-background border border-border rounded-xl shadow-sm p-4 flex flex-col h-full min-h-[220px]">
-      <h3 className="font-semibold text-foreground mb-2">Risk Distribution</h3>
-      <div className="flex-1 -mx-4">
+    <div className="relative group overflow-hidden bg-background border border-border rounded-xl p-4 flex flex-col h-full min-h-[220px] transition-all duration-300 motion-safe:hover:-translate-y-[1px] motion-safe:hover:bg-foreground/[0.02] motion-safe:hover:border-foreground/15 shadow-sm motion-safe:hover:shadow-[-8px_0_24px_-4px_rgba(0,0,0,0.4)]">
+      <HoverBorderRay />
+      <h3 className="font-semibold text-foreground mb-2 relative z-10">Risk Distribution</h3>
+      <div className="flex-1 -mx-4 relative z-10">
         <BaseChart option={option} height="100%" />
       </div>
     </div>

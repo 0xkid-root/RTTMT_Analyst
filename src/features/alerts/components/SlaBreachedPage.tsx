@@ -5,6 +5,7 @@ import { AlertsTable } from './AlertsTable';
 import { useAlerts } from '../hooks/useAlerts';
 import { Alert } from '../types/alert';
 import { AlertDetailsDrawer } from './AlertDetailsDrawer';
+import { RiskKpiCard } from '@/features/command-center/components/RiskKpiCard';
 
 export function SlaBreachedPage() {
   const [searchQuery, setSearchQuery] = useState('');
@@ -32,22 +33,10 @@ export function SlaBreachedPage() {
 
   const SummaryCards = (
     <div className="grid grid-cols-4 gap-4">
-      <div className="bg-card border border-red-500/30 p-4 rounded-xl shadow-sm">
-        <div className="text-sm text-red-500 font-medium mb-1">Breached Alerts</div>
-        <div className="text-2xl font-bold">{activeBreaches}</div>
-      </div>
-      <div className="bg-card border border-red-500/30 p-4 rounded-xl shadow-sm">
-        <div className="text-sm text-red-500 font-medium mb-1">Critical Breaches</div>
-        <div className="text-2xl font-bold">{criticalBreaches}</div>
-      </div>
-      <div className="bg-card border border-border p-4 rounded-xl shadow-sm">
-        <div className="text-sm text-muted-foreground font-medium mb-1">Longest Breach</div>
-        <div className="text-2xl font-bold">{longestBreachText}</div>
-      </div>
-      <div className="bg-card border border-orange-500/30 p-4 rounded-xl shadow-sm">
-        <div className="text-sm text-orange-500 font-medium mb-1">Unassigned Breaches</div>
-        <div className="text-2xl font-bold">{unassignedBreaches}</div>
-      </div>
+      <RiskKpiCard title="Breached Alerts" value={activeBreaches} index={0} isLive={activeBreaches > 0} liveTone="danger" />
+      <RiskKpiCard title="Critical Breaches" value={criticalBreaches} index={1} isLive={criticalBreaches > 0} liveTone="danger" />
+      <RiskKpiCard title="Longest Breach" value={longestBreachMin} subtext={longestBreachText} index={2} />
+      <RiskKpiCard title="Unassigned Breaches" value={unassignedBreaches} index={3} isLive={unassignedBreaches > 0} liveTone="warning" />
     </div>
   );
 

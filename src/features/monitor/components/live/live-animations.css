@@ -1,0 +1,174 @@
+/* =========================================
+   LEVEL 1 — Ambient Live Motion
+   ========================================= */
+
+@keyframes rtmt-live-dot-pulse {
+
+  0%,
+  100% {
+    transform: scale(1);
+    opacity: 1;
+  }
+
+  50% {
+    transform: scale(1.1);
+    opacity: 0.8;
+  }
+}
+
+.live-dot-ambient {
+  animation: rtmt-live-dot-pulse 2s ease-in-out infinite;
+}
+
+
+/* =========================================
+   LEVEL 2 — New Transaction
+   ========================================= */
+
+@keyframes rtmt-row-enter {
+  from {
+    opacity: 0;
+    transform: translateY(-8px);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.row-new-neutral {
+  animation:
+    rtmt-row-enter 300ms cubic-bezier(0.16, 1, 0.3, 1) both;
+}
+
+
+/* =========================================
+   LEVEL 3 — Risk Events
+   ========================================= */
+
+@keyframes rtmt-risk-amber {
+  0% {
+    background-color: transparent;
+  }
+
+  35% {
+    background-color: rgba(245, 158, 11, 0.06);
+  }
+
+  100% {
+    background-color: transparent;
+  }
+}
+
+@keyframes rtmt-risk-red {
+  0% {
+    background-color: transparent;
+  }
+
+  35% {
+    background-color: rgba(239, 68, 68, 0.08);
+  }
+
+  100% {
+    background-color: transparent;
+  }
+}
+
+.row-new-high {
+  animation:
+    rtmt-row-enter 300ms cubic-bezier(0.16, 1, 0.3, 1) both,
+    rtmt-risk-amber 700ms ease-out both;
+}
+
+.row-new-critical {
+  animation:
+    rtmt-row-enter 300ms cubic-bezier(0.16, 1, 0.3, 1) both,
+    rtmt-risk-red 800ms ease-out both;
+}
+
+
+/* =========================================
+   Risk Badge
+   ========================================= */
+
+@keyframes rtmt-badge-amber {
+
+  0%,
+  100% {
+    filter: brightness(1);
+    transform: scale(1);
+  }
+
+  50% {
+    filter: brightness(1.18);
+    transform: scale(1.03);
+  }
+}
+
+@keyframes rtmt-badge-red {
+
+  0%,
+  100% {
+    filter: brightness(1);
+    transform: scale(1);
+  }
+
+  50% {
+    filter: brightness(1.25);
+    transform: scale(1.04);
+  }
+}
+
+.row-new-high .risk-badge-animated {
+  animation: rtmt-badge-amber 600ms ease-out both;
+}
+
+.row-new-critical .risk-badge-animated {
+  animation: rtmt-badge-red 750ms ease-out both;
+}
+
+
+/* =========================================
+   Risk Score
+   ========================================= */
+
+@keyframes rtmt-score-emphasis {
+
+  0%,
+  100% {
+    filter: brightness(1);
+    transform: scale(1);
+  }
+
+  50% {
+    filter: brightness(1.25);
+    transform: scale(1.03);
+  }
+}
+
+.row-new-high .risk-score-animated,
+.row-new-critical .risk-score-animated {
+  animation: rtmt-score-emphasis 650ms ease-out both;
+}
+
+
+/* =========================================
+   Reduced Motion
+   ========================================= */
+
+@media (prefers-reduced-motion: reduce) {
+
+  .live-dot-ambient,
+  .row-new-neutral,
+  .row-new-high,
+  .row-new-critical,
+  .row-new-high .risk-badge-animated,
+  .row-new-critical .risk-badge-animated,
+  .row-new-high .risk-score-animated,
+  .row-new-critical .risk-score-animated {
+    animation: none !important;
+    transform: none !important;
+    filter: none !important;
+  }
+}

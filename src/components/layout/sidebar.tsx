@@ -173,6 +173,7 @@ const NAV_CATEGORIES: Category[] = [
 ];
 
 import { ChevronLeft } from 'lucide-react';
+import { HoverBorderRay } from '@/features/command-center/components/HoverBorderRay';
 
 interface SidebarProps {
   isCollapsed?: boolean;
@@ -224,15 +225,16 @@ export function Sidebar({ isCollapsed = false, onToggle }: SidebarProps) {
                 href={category.href!}
                 title={isCollapsed ? category.label : undefined}
                 className={cn(
-                  "flex items-center gap-3 py-2 rounded-md text-sm font-medium transition-colors mb-1",
+                  "relative group overflow-hidden flex items-center gap-3 py-2 rounded-md text-sm font-medium transition-colors mb-1",
                   isCollapsed ? "justify-center px-0" : "px-3",
                   isActive 
                     ? "bg-sidebar-accent text-sidebar-accent-foreground" 
                     : "text-sidebar-foreground/70 hover:bg-sidebar-accent/50 hover:text-sidebar-foreground"
                 )}
               >
-                <category.icon className="h-4 w-4 shrink-0" />
-                {!isCollapsed && <span>{category.label}</span>}
+                <HoverBorderRay borderRadius="rounded-md" />
+                <category.icon className="h-4 w-4 shrink-0 relative z-10" />
+                {!isCollapsed && <span className="relative z-10">{category.label}</span>}
               </Link>
             );
           }
@@ -253,20 +255,21 @@ export function Sidebar({ isCollapsed = false, onToggle }: SidebarProps) {
                 }}
                 title={isCollapsed ? category.label : undefined}
                 className={cn(
-                  "flex items-center justify-between py-2 rounded-md text-sm font-semibold transition-colors w-full group",
+                  "relative group overflow-hidden flex items-center justify-between py-2 rounded-md text-sm font-semibold transition-colors w-full",
                   isCollapsed ? "justify-center px-0" : "px-3",
                   hasActiveChild ? "text-sidebar-foreground" : "text-sidebar-foreground/70 hover:text-sidebar-foreground hover:bg-sidebar-accent/50"
                 )}
               >
-                <div className="flex items-center gap-3">
+                <HoverBorderRay borderRadius="rounded-md" />
+                <div className="flex items-center gap-3 relative z-10">
                   <category.icon className="h-4 w-4 shrink-0" />
                   {!isCollapsed && <span>{category.label}</span>}
                 </div>
                 {!isCollapsed && (
                   isExpanded ? (
-                    <ChevronDown className="h-4 w-4 opacity-70" />
+                    <ChevronDown className="h-4 w-4 opacity-70 relative z-10" />
                   ) : (
-                    <ChevronRight className="h-4 w-4 opacity-70" />
+                    <ChevronRight className="h-4 w-4 opacity-70 relative z-10" />
                   )
                 )}
               </button>
@@ -280,14 +283,15 @@ export function Sidebar({ isCollapsed = false, onToggle }: SidebarProps) {
                         key={subItem.label}
                         href={subItem.href}
                         className={cn(
-                          "flex items-center gap-3 px-3 py-1.5 rounded-md text-xs font-medium transition-colors",
+                          "relative group overflow-hidden flex items-center gap-3 px-3 py-1.5 rounded-md text-xs font-medium transition-colors",
                           isChildActive 
                             ? "bg-sidebar-accent/50 text-sidebar-accent-foreground" 
                             : "text-sidebar-foreground/60 hover:text-sidebar-foreground hover:bg-sidebar-accent/30"
                         )}
                       >
-                        <subItem.icon className="h-3.5 w-3.5 shrink-0 opacity-70" />
-                        {subItem.label}
+                        <HoverBorderRay borderRadius="rounded-md" />
+                        <subItem.icon className="h-3.5 w-3.5 shrink-0 opacity-70 relative z-10" />
+                        <span className="relative z-10">{subItem.label}</span>
                       </Link>
                     );
                   })}

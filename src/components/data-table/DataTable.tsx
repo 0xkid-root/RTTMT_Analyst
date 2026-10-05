@@ -5,27 +5,34 @@ import {
   Table as TanStackTable,
 } from '@tanstack/react-table';
 
+import { Row } from '@tanstack/react-table';
+
 interface DataTableProps<TData> {
   table: TanStackTable<TData>;
   onRowClick?: (row: TData) => void;
   emptyMessage?: string;
+  getRowProps?: (row: Row<TData>) => React.HTMLAttributes<HTMLTableRowElement>;
 }
+
+import { HoverBorderRay } from '@/features/command-center/components/HoverBorderRay';
 
 export function DataTable<TData>({
   table,
   onRowClick,
   emptyMessage = 'No data available.',
+  getRowProps,
 }: DataTableProps<TData>) {
   return (
-    <div className="bg-card border border-border rounded-xl shadow-sm">
-      <div className="overflow-x-auto">
+    <div className="bg-card border border-border rounded-xl shadow-sm relative group overflow-hidden">
+      <HoverBorderRay />
+      <div className="overflow-x-auto relative z-10 bg-card rounded-xl">
         <table className="w-full text-left text-sm">
           <thead className="bg-muted/50 border-b border-border text-xs uppercase text-muted-foreground">
             {table.getHeaderGroups().map((headerGroup) => (
               <tr key={headerGroup.id}>
                 {headerGroup.headers.map((header) => {
                   return (
-                    <th key={header.id} className="px-4 py-3 font-medium">
+                    <th key={header.id} className="px-4 py-4 font-medium">
                       {header.isPlaceholder ? null : (
                         <div
                           className={
@@ -57,10 +64,11 @@ export function DataTable<TData>({
                 <tr
                   key={row.id}
                   onClick={() => onRowClick && onRowClick(row.original)}
-                  className={`transition-colors hover:bg-muted/50 ${onRowClick ? 'cursor-pointer' : ''}`}
+                  {...(getRowProps ? getRowProps(row) : {})}
+                  className={`transition-colors hover:bg-muted/50 ${onRowClick ? 'cursor-pointer' : ''} ${getRowProps?.(row).className || ''}`}
                 >
                   {row.getVisibleCells().map((cell) => (
-                    <td key={cell.id} className="px-4 py-3 whitespace-nowrap">
+                    <td key={cell.id} className="px-4 py-4 whitespace-nowrap">
                       {flexRender(cell.column.columnDef.cell, cell.getContext())}
                     </td>
                   ))}

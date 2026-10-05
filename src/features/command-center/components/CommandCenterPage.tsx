@@ -3,7 +3,7 @@
 import { CommandCenterHeader } from './CommandCenterHeader';
 import { RiskSummary } from './RiskSummary';
 import dynamic from 'next/dynamic';
-const TransactionRiskMap = dynamic(() => import('./TransactionRiskMap'), { 
+const TransactionRiskMap = dynamic(() => import('./TransactionRiskMap'), {
   ssr: false,
   loading: () => <div className="w-full h-full min-h-[500px] flex items-center justify-center bg-background border border-border rounded-xl text-muted-foreground">Loading Risk Map...</div>
 });
@@ -28,6 +28,8 @@ import {
   mockNetworkEdges
 } from '../data/mock-command-center-data';
 
+import { StaggerContainer, StaggerItem } from '@/components/animations/Stagger';
+
 export function CommandCenterPage() {
   const totalTrans = mockRiskSummary.totalTransactions.total;
   const distributionData = {
@@ -39,32 +41,37 @@ export function CommandCenterPage() {
   };
 
   return (
-    <div className="flex flex-col gap-5 max-w-[1600px] mx-auto">
-      <CommandCenterHeader />
-      
+    <StaggerContainer staggerDelay={0.05} className="flex flex-col gap-5 max-w-[1600px] mx-auto">
+      <StaggerItem>
+        <CommandCenterHeader />
+      </StaggerItem>
+
       {/* Row 1: KPIs */}
-      <RiskSummary data={mockRiskSummary} />
-      
+      <StaggerItem>
+        <RiskSummary data={mockRiskSummary} />
+      </StaggerItem>
+
       {/* Row 2: Map (Full Width) */}
-      <div className="w-full h-[500px] xl:h-[600px] rounded-xl overflow-hidden border border-border">
-        <TransactionRiskMap />
-      </div>
-      
+      <StaggerItem>
+        <div className="w-full h-[500px] xl:h-[600px] rounded-xl overflow-hidden border border-border">
+          <TransactionRiskMap />
+        </div>
+      </StaggerItem>
+
       {/* Row 3: Charts and Lists (3 Columns) */}
-      <div className="grid grid-cols-1 lg:grid-cols-3 gap-5">
+      <StaggerItem className="grid grid-cols-1 lg:grid-cols-3 gap-5">
         <RiskDistributionChart data={distributionData} />
         <MaliScoreChart data={mockMaliScoreDistribution} />
         <TopRulesList data={mockTopRules} />
-      </div>
-      
+      </StaggerItem>
+
       {/* Row 4: Bottom Tables and Charts */}
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-5">
+      <StaggerItem className="grid grid-cols-1 lg:grid-cols-2 gap-5">
         <RecentAlertsTable data={mockRecentAlerts} />
         <TransactionVolumeChart data={mockTransactionVolume} />
         <AlertTrendChart data={mockAlertTrend} />
         <RecentCasesTable data={mockRecentCases} />
-      </div>
-      
-    </div>
+      </StaggerItem>
+    </StaggerContainer>
   );
 }

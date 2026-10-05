@@ -36,6 +36,11 @@ export function LiveTransactionsTable({
   
   // Track previous transactions length to detect new arrivals
   const prevLengthRef = useRef(transactions.length);
+  const initialIdsRef = useRef<Set<string> | null>(null);
+
+  if (initialIdsRef.current === null) {
+    initialIdsRef.current = new Set(transactions.map(t => t.id));
+  }
 
   const filtered = useMemo(() => transactions.filter(t => {
     if (!searchTerm) return true;
@@ -131,6 +136,17 @@ export function LiveTransactionsTable({
           table={table} 
           onRowClick={onTransactionClick}
           emptyMessage="No live transactions found."
+          getRowProps={(row) => {
+            const t = row.original;
+            const isNew = initialIdsRef.current && !initialIdsRef.current.has(t.id);
+            if (!isNew) return {};
+            
+            let animClass = 'row-new-neutral';
+            if (t.riskLevel === 'HIGH') animClass = 'row-new-high';
+            else if (t.riskLevel === 'CRITICAL') animClass = 'row-new-critical';
+            
+            return { className: animClass };
+          }}
         />
       </div>
 
