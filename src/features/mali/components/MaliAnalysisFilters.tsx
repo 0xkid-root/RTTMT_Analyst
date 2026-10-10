@@ -6,6 +6,8 @@ import { useState, useRef, useEffect } from 'react';
 import { HoverBorderRay } from '@/features/command-center/components/HoverBorderRay';
 import { MaliFilterState } from '../hooks/useMaliAnalysis';
 
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
+
 interface MaliAnalysisFiltersProps {
   filters: MaliFilterState;
   onFilterChange: (key: keyof MaliFilterState, value: string) => void;
@@ -34,8 +36,12 @@ export function MaliAnalysisFilters({ filters, onFilterChange, onReset, onSearch
     cardRef.current.style.setProperty('--mouse-y', `${y}px`);
   };
 
-  const handleChange = (key: keyof MaliFilterState) => (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
+  const handleChange = (key: keyof MaliFilterState) => (e: React.ChangeEvent<HTMLInputElement>) => {
     onFilterChange(key, e.target.value);
+  };
+
+  const handleSelectChange = (key: keyof MaliFilterState) => (value: string | null) => {
+    onFilterChange(key, value === 'all' || value === null ? '' : value);
   };
 
   return (
@@ -80,13 +86,18 @@ export function MaliAnalysisFilters({ filters, onFilterChange, onReset, onSearch
 
         <div className="flex flex-col gap-1">
           <label className="text-xs text-muted-foreground">Risk Level</label>
-          <select value={filters.riskLevel} onChange={handleChange('riskLevel')} className="bg-background/50 backdrop-blur-sm border border-border rounded-md px-3 py-1.5 text-sm hover:bg-background/80 transition-colors focus:outline-none focus:ring-1 focus:ring-primary">
-            <option value="">All</option>
-            <option value="CRITICAL">Critical</option>
-            <option value="HIGH">High</option>
-            <option value="MEDIUM">Medium</option>
-            <option value="LOW">Low</option>
-          </select>
+          <Select value={filters.riskLevel || 'all'} onValueChange={handleSelectChange('riskLevel')}>
+            <SelectTrigger className="w-full bg-background/50 backdrop-blur-sm border-border hover:bg-background/80 transition-colors h-[34px]">
+              <SelectValue placeholder="All" />
+            </SelectTrigger>
+            <SelectContent>
+              <SelectItem value="all">All</SelectItem>
+              <SelectItem value="CRITICAL">Critical</SelectItem>
+              <SelectItem value="HIGH">High</SelectItem>
+              <SelectItem value="MEDIUM">Medium</SelectItem>
+              <SelectItem value="LOW">Low</SelectItem>
+            </SelectContent>
+          </Select>
         </div>
       </div>
 
