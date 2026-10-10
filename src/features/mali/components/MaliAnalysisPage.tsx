@@ -15,6 +15,8 @@ const defaultFilters: MaliFilterState = {
   endDate: '',
 };
 
+import { MaliEvaluationFlow } from './MaliEvaluationFlow';
+
 export function MaliAnalysisPage() {
   const [filters, setFilters] = useState<MaliFilterState>(defaultFilters);
   const [activeFilters, setActiveFilters] = useState<MaliFilterState>(defaultFilters);
@@ -54,6 +56,10 @@ export function MaliAnalysisPage() {
           </div>
           <p className="text-muted-foreground mt-1">Explainable transaction risk scoring</p>
         </div>
+      </StaggerItem>
+
+      <StaggerItem>
+        <MaliEvaluationFlow />
       </StaggerItem>
       
       <StaggerItem>
