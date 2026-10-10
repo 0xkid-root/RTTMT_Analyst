@@ -8,9 +8,10 @@ interface BaseChartProps {
   option: EChartsOption;
   height?: number | string;
   className?: string;
+  onEvents?: Record<string, Function>;
 }
 
-export function BaseChart({ option, height = 300, className }: BaseChartProps) {
+export function BaseChart({ option, height = 300, className, onEvents }: BaseChartProps) {
   const { resolvedTheme } = useTheme();
 
   return (
@@ -20,6 +21,7 @@ export function BaseChart({ option, height = 300, className }: BaseChartProps) {
       style={{ height, width: '100%' }}
       className={className}
       opts={{ renderer: 'svg' }}
+      onEvents={onEvents}
     />
   );
 }

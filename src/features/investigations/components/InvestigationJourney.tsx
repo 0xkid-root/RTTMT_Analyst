@@ -5,7 +5,7 @@ import { motion, useReducedMotion } from 'framer-motion';
 import { Investigation } from '../types/investigation';
 import {
   Network, ShieldAlert, ArrowRightLeft, Store,
-  FileArchive, FileText, Gavel, FileCheck2
+  FileArchive, FileText, Gavel, FileCheck2, LucideIcon
 } from 'lucide-react';
 
 

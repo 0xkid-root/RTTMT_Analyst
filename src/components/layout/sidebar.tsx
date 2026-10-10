@@ -128,7 +128,14 @@ const NAV_CATEGORIES: Category[] = [
       { label: 'Velocity Analysis', href: '/intelligence/velocity', icon: Activity },
       { label: 'Geographic Analysis', href: '/intelligence/geographic', icon: MapIcon },
       { label: 'Network Intelligence', href: '/intelligence/network', icon: Network },
-      { label: 'Website Intelligence', href: '/intelligence/website', icon: Shield },
+    ]
+  },
+  { 
+    label: 'Website Scanning', 
+    icon: Shield,
+    subItems: [
+      { label: 'Scan', href: '/website-scanning/scan', icon: Search },
+      { label: 'Website Details', href: '/website-scanning/details', icon: FileText },
     ]
   },
   { 
