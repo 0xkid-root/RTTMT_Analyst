@@ -1,4 +1,11 @@
-import TransactionRiskMap from "@/features/command-center/components/TransactionRiskMap";
+'use client';
+
+import dynamic from 'next/dynamic';
+
+const TransactionRiskMap = dynamic(
+  () => import('@/features/command-center/components/TransactionRiskMap'),
+  { ssr: false }
+);
 
 export default function MapTestPage() {
   return (
