@@ -9,6 +9,7 @@ import { SignalDetailsDrawer } from '../signals/SignalDetailsDrawer';
 import { RuleDetailsDrawer } from '../rules/RuleDetailsDrawer';
 import { RuleSimulationSandbox } from '../simulation/RuleSimulationSandbox';
 import { DetectionToast } from '../shared/DetectionToast';
+import { DetectionSignalPipeline } from '../shared/DetectionSignalPipeline';
 import { RiskKpiCard } from '@/features/command-center/components/RiskKpiCard';
 import { BaseChart } from '@/components/charts/base-chart';
 import { StaggerContainer, StaggerItem } from '@/components/animations/Stagger';
@@ -227,40 +228,9 @@ export function DetectionOverviewPage() {
         </div>
       </StaggerItem>
 
-      {/* Engine Status Banner */}
+      {/* Detection Signal Flow Pipeline */}
       <StaggerItem>
-        <div className="relative group overflow-hidden bg-card border border-border rounded-xl p-4 flex flex-col md:flex-row items-start md:items-center justify-between gap-4">
-          <HoverBorderRay />
-          <div className="flex items-center gap-3 relative z-10">
-            <div className="w-10 h-10 rounded-full bg-emerald-500/10 border border-emerald-500/30 flex items-center justify-center text-emerald-400 shrink-0">
-              <ShieldCheck className="w-5 h-5" />
-            </div>
-            <div>
-              <div className="flex items-center gap-2">
-                <span className="font-semibold text-sm text-foreground">
-                  Stream Detection Pipeline Active
-                </span>
-                <span className="px-2 py-0.5 rounded text-[10px] font-bold font-mono bg-emerald-500/10 text-emerald-400 border border-emerald-500/30">
-                  HEALTHY
-                </span>
-              </div>
-              <p className="text-xs text-muted-foreground mt-0.5">
-                Ingesting Kafka events @ 14,280 ops/sec across 10 active rule clusters with {avgLatency}ms mean evaluation latency.
-              </p>
-            </div>
-          </div>
-
-          <div className="flex items-center gap-6 text-xs text-muted-foreground relative z-10">
-            <div>
-              <span className="block text-muted-foreground">Rule Sets:</span>
-              <span className="font-mono font-semibold text-foreground">v2.4 Production</span>
-            </div>
-            <div>
-              <span className="block text-muted-foreground">MALi Feedback:</span>
-              <span className="font-mono font-semibold text-emerald-400">Sync Active</span>
-            </div>
-          </div>
-        </div>
+        <DetectionSignalPipeline />
       </StaggerItem>
 
       {/* KPI Cards */}
