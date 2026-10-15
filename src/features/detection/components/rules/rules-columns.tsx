@@ -64,14 +64,18 @@ export const createRulesColumns = (actions: RulesColumnsActions) => [
             e.stopPropagation();
             actions.onToggleStatus(ruleId);
           }}
-          className={`flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-medium transition-all border ${
+          className={`flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-medium transition-all duration-200 border ${
             isEnabled
-              ? 'bg-emerald-500/10 border-emerald-500/30 text-emerald-400 hover:bg-emerald-500/20'
-              : 'bg-muted/40 border-border text-muted-foreground hover:bg-muted'
+              ? 'bg-emerald-500/10 border-emerald-500/30 text-emerald-400 hover:bg-emerald-500/20 active:scale-95'
+              : 'bg-muted/40 border-border text-muted-foreground hover:bg-muted active:scale-95'
           }`}
           title={isEnabled ? 'Click to Disable Rule' : 'Click to Enable Rule'}
         >
-          <span className={`w-2 h-2 rounded-full ${isEnabled ? 'bg-emerald-400' : 'bg-muted-foreground'}`} />
+          <span
+            className={`w-2 h-2 rounded-full transition-all duration-300 ${
+              isEnabled ? 'bg-emerald-400 shadow-[0_0_6px_rgba(52,211,153,0.6)]' : 'bg-muted-foreground/60'
+            }`}
+          />
           <span>{isEnabled ? 'Enabled' : 'Disabled'}</span>
         </button>
       );
@@ -126,7 +130,7 @@ export const createRulesColumns = (actions: RulesColumnsActions) => [
         <Button
           variant="ghost"
           size="sm"
-          className="h-8 w-8 p-0 text-muted-foreground hover:text-foreground"
+          className="h-8 w-8 p-0 text-muted-foreground hover:text-foreground transition-transform duration-150 hover:scale-110 active:scale-95"
           onClick={() => actions.onInspect(info.row.original)}
           title="Inspect Rule Details"
         >
@@ -136,7 +140,7 @@ export const createRulesColumns = (actions: RulesColumnsActions) => [
         <Button
           variant="ghost"
           size="sm"
-          className="h-8 w-8 p-0 text-muted-foreground hover:text-foreground"
+          className="h-8 w-8 p-0 text-muted-foreground hover:text-foreground transition-transform duration-150 hover:scale-110 active:scale-95"
           onClick={() => actions.onEdit(info.row.original)}
           title="Edit Rule Configuration"
         >
@@ -146,7 +150,7 @@ export const createRulesColumns = (actions: RulesColumnsActions) => [
         <Button
           variant="ghost"
           size="sm"
-          className="h-8 w-8 p-0 text-primary/80 hover:text-primary hover:bg-primary/10"
+          className="h-8 w-8 p-0 text-primary/80 hover:text-primary hover:bg-primary/10 transition-transform duration-150 hover:scale-110 active:scale-95"
           onClick={() => actions.onSimulate(info.row.original)}
           title="Run Simulation against this Rule"
         >

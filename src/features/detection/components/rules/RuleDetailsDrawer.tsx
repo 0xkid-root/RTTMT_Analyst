@@ -197,7 +197,7 @@ export function RuleDetailsDrawer({ rule, isOpen, onClose }: RuleDetailsDrawerPr
               {rule.conditions.map((condition, idx) => (
                 <div
                   key={condition.id}
-                  className="bg-card border border-border rounded-xl p-3.5 space-y-2 relative"
+                  className="bg-card border border-border rounded-xl p-3.5 space-y-2 relative transition-all duration-200 hover:border-border/80"
                 >
                   <div className="flex items-center justify-between">
                     <span className="text-xs font-semibold text-foreground">
@@ -222,6 +222,16 @@ export function RuleDetailsDrawer({ rule, isOpen, onClose }: RuleDetailsDrawerPr
                 </div>
               ))}
             </div>
+
+            <Button
+              variant="outline"
+              size="sm"
+              onClick={handleSimulate}
+              className="w-full text-xs gap-2 border-primary/30 text-primary hover:bg-primary/10 hover:border-primary/50 transition-all duration-200"
+            >
+              <PlayCircle className="w-3.5 h-3.5" />
+              Simulate & Evaluate Conditions in Sandbox
+            </Button>
           </div>
 
           {/* Triggered Output Signal */}

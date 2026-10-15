@@ -330,6 +330,9 @@ export function DetectionRulesPage() {
         <DataTable
           table={table}
           onRowClick={(row) => setSelectedRule(row)}
+          getRowProps={() => ({
+            className: 'transition-all duration-200 hover:bg-muted/40 cursor-pointer',
+          })}
           emptyMessage={
             hasActiveFilters
               ? 'No detection rules match the selected filter criteria.'
