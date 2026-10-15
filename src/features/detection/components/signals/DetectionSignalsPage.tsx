@@ -62,8 +62,16 @@ const TIME_RANGES = [
 ];
 
 export function DetectionSignalsPage() {
-  const { signals, selectedSignal, isSignalDrawerOpen, setSelectedSignal, closeSignalDrawer, showToast } =
-    useDetectionStore();
+  const {
+    signals,
+    selectedSignal,
+    isSignalDrawerOpen,
+    newlyArrivedSignalId,
+    setSelectedSignal,
+    closeSignalDrawer,
+    emitMockSignal,
+    showToast,
+  } = useDetectionStore();
 
   const [searchQuery, setSearchQuery] = useState('');
   const [selectedSeverity, setSelectedSeverity] = useState<SignalSeverity | 'ALL'>('ALL');
@@ -156,7 +164,10 @@ export function DetectionSignalsPage() {
 
   const hasActiveFilters = searchQuery !== '' || selectedSeverity !== 'ALL' || selectedSignalType !== 'ALL' || selectedTimeRange !== 'ALL';
 
-  const columns = useMemo(() => createSignalsColumns((signal) => setSelectedSignal(signal)), [setSelectedSignal]);
+  const columns = useMemo(
+    () => createSignalsColumns((signal) => setSelectedSignal(signal), newlyArrivedSignalId),
+    [setSelectedSignal, newlyArrivedSignalId]
+  );
 
   const table = useReactTable({
     data: filteredSignals,
@@ -200,6 +211,16 @@ export function DetectionSignalsPage() {
         </div>
 
         <div className="flex items-center gap-3">
+          <Button
+            variant="outline"
+            size="sm"
+            onClick={() => emitMockSignal()}
+            className="gap-2 border-primary/30 text-primary hover:bg-primary/10 hover:border-primary/50 transition-all duration-200"
+          >
+            <Zap className="w-3.5 h-3.5 text-amber-400" />
+            Simulate Inbound Signal
+          </Button>
+
           <Button
             variant="outline"
             size="sm"
@@ -362,6 +383,14 @@ export function DetectionSignalsPage() {
         <DataTable
           table={table}
           onRowClick={(row) => setSelectedSignal(row)}
+          getRowProps={(row) => {
+            const isNew = row.original.id === newlyArrivedSignalId;
+            return {
+              className: isNew
+                ? 'animate-in fade-in duration-500 bg-emerald-500/10 border-l-2 border-emerald-500 hover:bg-emerald-500/15'
+                : 'hover:bg-muted/50 transition-colors',
+            };
+          }}
           emptyMessage={
             hasActiveFilters
               ? 'No detection signals match the selected filters. Try broadening your criteria.'

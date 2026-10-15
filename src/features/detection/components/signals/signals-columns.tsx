@@ -6,16 +6,28 @@ import { Button } from '@/components/ui/button';
 
 const columnHelper = createColumnHelper<DetectionSignal>();
 
-export const createSignalsColumns = (onInspect: (signal: DetectionSignal) => void) => [
+export const createSignalsColumns = (
+  onInspect: (signal: DetectionSignal) => void,
+  newlyArrivedSignalId?: string | null
+) => [
   columnHelper.accessor('id', {
     header: 'Signal ID',
-    cell: (info) => (
-      <div className="flex items-center gap-2">
-        <span className="font-mono text-xs font-semibold text-primary tracking-wide">
-          {info.getValue()}
-        </span>
-      </div>
-    ),
+    cell: (info) => {
+      const isNew = info.getValue() === newlyArrivedSignalId;
+      return (
+        <div className="flex items-center gap-2">
+          <span className="font-mono text-xs font-semibold text-primary tracking-wide">
+            {info.getValue()}
+          </span>
+          {isNew && (
+            <span className="inline-flex items-center gap-1 text-[10px] font-mono font-bold px-1.5 py-0.5 text-emerald-300 bg-emerald-500/20 border border-emerald-500/40 rounded animate-pulse">
+              <span className="w-1.5 h-1.5 rounded-full bg-emerald-400" />
+              NEW
+            </span>
+          )}
+        </div>
+      );
+    },
   }),
 
   columnHelper.accessor('transactionId', {
