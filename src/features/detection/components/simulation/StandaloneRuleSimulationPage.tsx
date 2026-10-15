@@ -7,6 +7,7 @@ import { RuleSimulationInput, RuleSimulationResult } from '../../types/detection
 import { SeverityBadge, SignalTypeBadge, RuleCategoryBadge } from '../shared/DetectionBadge';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
+import { motion, useReducedMotion, AnimatePresence } from 'framer-motion';
 import { StaggerContainer, StaggerItem } from '@/components/animations/Stagger';
 import { HoverBorderRay } from '@/features/command-center/components/HoverBorderRay';
 import { DetectionToast } from '../shared/DetectionToast';
@@ -24,10 +25,11 @@ import {
   Zap,
   ArrowRight,
   ArrowLeft,
+  Loader2,
 } from 'lucide-react';
 
 export function StandaloneRuleSimulationPage() {
-  const { rules, simulationPresets, runSimulation } = useDetectionStore();
+  const { rules, simulationPresets, runSimulation, emitMockSignal } = useDetectionStore();
 
   const [selectedRuleId, setSelectedRuleId] = useState<string>(rules[0]?.id || '');
   const [activePresetId, setActivePresetId] = useState<string>(simulationPresets[0]?.id || '');
@@ -45,6 +47,9 @@ export function StandaloneRuleSimulationPage() {
     merchantCategory: 'Consumer Electronics',
   });
 
+  const reduce = useReducedMotion();
+  const [evaluatingIndex, setEvaluatingIndex] = useState<number>(-1);
+  const [evaluationComplete, setEvaluationComplete] = useState<boolean>(false);
   const [isSimulating, setIsSimulating] = useState(false);
   const [result, setResult] = useState<RuleSimulationResult | null>(null);
 
@@ -59,6 +64,7 @@ export function StandaloneRuleSimulationPage() {
         setSelectedRuleId(preset.targetRuleId);
       }
       setResult(null);
+      setEvaluationComplete(false);
     }
   };
 
@@ -66,13 +72,32 @@ export function StandaloneRuleSimulationPage() {
     if (!currentRule) return;
 
     setIsSimulating(true);
-    setResult(null);
+    setEvaluationComplete(false);
+    const simResult = runSimulation(currentRule.id, inputAttributes);
+    setResult(simResult);
 
-    setTimeout(() => {
-      const simResult = runSimulation(currentRule.id, inputAttributes);
-      setResult(simResult);
+    if (reduce) {
+      setEvaluatingIndex(simResult.conditionResults.length);
+      setEvaluationComplete(true);
       setIsSimulating(false);
-    }, 300);
+      return;
+    }
+
+    setEvaluatingIndex(0);
+    const total = simResult.conditionResults.length;
+    let current = 0;
+
+    const timer = setInterval(() => {
+      current++;
+      if (current >= total) {
+        clearInterval(timer);
+        setEvaluatingIndex(total);
+        setEvaluationComplete(true);
+        setIsSimulating(false);
+      } else {
+        setEvaluatingIndex(current);
+      }
+    }, 280);
   };
 
   return (
@@ -352,119 +377,193 @@ export function StandaloneRuleSimulationPage() {
 
               {result && (
                 <div className="space-y-4">
-                  {/* Status Banner */}
-                  <div
-                    className={`p-4 rounded-xl border flex items-center justify-between ${
-                      result.matched
-                        ? 'bg-red-500/10 border-red-500/30 text-red-400'
-                        : 'bg-emerald-500/10 border-emerald-500/30 text-emerald-400'
-                    }`}
-                  >
-                    <div className="flex items-center gap-3">
-                      {result.matched ? (
-                        <div className="w-10 h-10 rounded-full bg-red-500/20 flex items-center justify-center text-red-400 shrink-0">
-                          <AlertTriangle className="w-5 h-5 animate-pulse" />
-                        </div>
-                      ) : (
-                        <div className="w-10 h-10 rounded-full bg-emerald-500/20 flex items-center justify-center text-emerald-400 shrink-0">
-                          <CheckCircle2 className="w-5 h-5" />
-                        </div>
-                      )}
-                      <div>
-                        <h4 className="text-base font-bold">
-                          {result.matched ? 'RULE MATCHED (TRIGGERED)' : 'RULE NOT TRIGGERED (PASSED)'}
-                        </h4>
-                        <p className="text-xs opacity-80 mt-0.5">
-                          {result.matched
-                            ? `All conditions for rule ${result.ruleId} were satisfied.`
-                            : `Parameters did not exceed thresholds defined in rule ${result.ruleId}.`}
-                        </p>
-                      </div>
-                    </div>
-
-                    <span className="font-mono text-xs font-bold uppercase px-2.5 py-1 rounded bg-black/40">
-                      {result.matched ? 'MATCHED' : 'CLEAR'}
-                    </span>
-                  </div>
-
-                  {/* Conditions Checklist */}
+                  {/* Step-by-step Condition Breakdown */}
                   <div className="space-y-2">
-                    <h4 className="text-xs font-semibold text-foreground">
-                      Condition-by-Condition Evaluation:
-                    </h4>
+                    <div className="flex items-center justify-between">
+                      <h4 className="text-xs font-semibold text-foreground">
+                        Condition-by-Condition Evaluation:
+                      </h4>
+                      {!evaluationComplete && isSimulating && (
+                        <span className="text-[11px] text-amber-400 font-mono flex items-center gap-1.5 animate-pulse">
+                          <Loader2 className="w-3 h-3 animate-spin" />
+                          Evaluating conditions sequentially...
+                        </span>
+                      )}
+                    </div>
 
                     <div className="space-y-2">
-                      {result.conditionResults.map((cr, idx) => (
-                        <div
-                          key={cr.conditionId || idx}
-                          className={`p-3 rounded-lg border text-xs flex items-center justify-between gap-3 ${
-                            cr.passed
-                              ? 'bg-emerald-500/5 border-emerald-500/20 text-emerald-300'
-                              : 'bg-muted/20 border-border text-muted-foreground'
-                          }`}
-                        >
-                          <div className="flex items-center gap-2.5">
-                            {cr.passed ? (
-                              <CheckCircle2 className="w-4 h-4 text-emerald-400 shrink-0" />
-                            ) : (
-                              <XCircle className="w-4 h-4 text-muted-foreground shrink-0" />
-                            )}
-                            <div>
-                              <span className="font-semibold text-foreground">
-                                {cr.label}
-                              </span>
-                              <span className="text-[11px] font-mono block opacity-80">
-                                {cr.field} {cr.operator} {String(cr.expectedValue)} (Actual: <strong>{String(cr.actualValue)}</strong>)
-                              </span>
-                            </div>
-                          </div>
+                      {result.conditionResults.map((cr, idx) => {
+                        const isPending = !evaluationComplete && idx > evaluatingIndex;
+                        const isEvaluating = !evaluationComplete && idx === evaluatingIndex;
+                        const isEvaluated = evaluationComplete || idx < evaluatingIndex;
 
-                          <span
-                            className={`font-mono text-[11px] font-bold px-2 py-0.5 rounded ${
-                              cr.passed
-                                ? 'bg-emerald-500/20 text-emerald-300'
-                                : 'bg-muted text-muted-foreground'
+                        return (
+                          <motion.div
+                            key={cr.conditionId || idx}
+                            initial={reduce ? false : { opacity: 0.7, y: 3 }}
+                            animate={{
+                              opacity: isPending ? 0.45 : 1,
+                              y: 0,
+                              scale: isEvaluating ? 1.01 : 1,
+                            }}
+                            transition={{ duration: 0.2 }}
+                            className={`p-3 rounded-lg border text-xs flex items-center justify-between gap-3 transition-all ${
+                              isEvaluating
+                                ? 'bg-amber-500/10 border-amber-500/40 text-amber-300'
+                                : isEvaluated
+                                  ? cr.passed
+                                    ? 'bg-emerald-500/5 border-emerald-500/25 text-emerald-300'
+                                    : 'bg-red-500/5 border-red-500/25 text-red-300'
+                                  : 'bg-muted/15 border-border/60 text-muted-foreground'
                             }`}
                           >
-                            {cr.passed ? 'PASSED' : 'FAILED'}
-                          </span>
-                        </div>
-                      ))}
+                            <div className="flex items-center gap-2.5">
+                              {isEvaluating ? (
+                                <Loader2 className="w-4 h-4 text-amber-400 animate-spin shrink-0" />
+                              ) : isEvaluated ? (
+                                cr.passed ? (
+                                  <motion.div initial={reduce ? false : { scale: 0 }} animate={{ scale: 1 }}>
+                                    <CheckCircle2 className="w-4 h-4 text-emerald-400 shrink-0" />
+                                  </motion.div>
+                                ) : (
+                                  <motion.div initial={reduce ? false : { scale: 0 }} animate={{ scale: 1 }}>
+                                    <XCircle className="w-4 h-4 text-red-400 shrink-0" />
+                                  </motion.div>
+                                )
+                              ) : (
+                                <div className="w-4 h-4 rounded-full border border-border bg-muted/40 shrink-0" />
+                              )}
+                              <div>
+                                <span className="font-semibold text-foreground">
+                                  {cr.label}
+                                </span>
+                                <span className="text-[11px] font-mono block opacity-80">
+                                  {cr.field} {cr.operator} {String(cr.expectedValue)} (Actual: <strong className="text-foreground">{String(cr.actualValue)}</strong>)
+                                </span>
+                              </div>
+                            </div>
+
+                            <span
+                              className={`font-mono text-[11px] font-bold px-2 py-0.5 rounded transition-all ${
+                                isEvaluating
+                                  ? 'bg-amber-500/20 text-amber-300 animate-pulse'
+                                  : isEvaluated
+                                    ? cr.passed
+                                      ? 'bg-emerald-500/20 text-emerald-300'
+                                      : 'bg-red-500/20 text-red-300'
+                                    : 'bg-muted/40 text-muted-foreground'
+                              }`}
+                            >
+                              {isEvaluating
+                                ? 'EVALUATING...'
+                                : isEvaluated
+                                  ? cr.passed
+                                    ? 'PASSED'
+                                    : 'FAILED'
+                                  : 'PENDING'}
+                            </span>
+                          </motion.div>
+                        );
+                      })}
                     </div>
                   </div>
 
-                  {/* Generated Signal Preview */}
-                  {result.simulatedSignal && (
-                    <div className="p-4 bg-muted/30 border border-border rounded-xl space-y-2">
-                      <div className="flex items-center justify-between">
-                        <span className="text-xs uppercase font-bold text-muted-foreground tracking-wider flex items-center gap-1.5">
-                          <Zap className="w-3.5 h-3.5 text-amber-400" />
-                          Generated Simulated Finding
-                        </span>
-                        <span className="font-mono text-xs text-primary font-bold">
-                          {result.simulatedSignal.id}
-                        </span>
-                      </div>
+                  {/* Status Banner shown once evaluation completes */}
+                  <AnimatePresence>
+                    {evaluationComplete && (
+                      <motion.div
+                        initial={reduce ? false : { opacity: 0, scale: 0.98, y: 5 }}
+                        animate={{ opacity: 1, scale: 1, y: 0 }}
+                        exit={{ opacity: 0 }}
+                        transition={{ duration: 0.3 }}
+                        className={`p-4 rounded-xl border flex items-center justify-between ${
+                          result.matched
+                            ? 'bg-red-500/10 border-red-500/30 text-red-400'
+                            : 'bg-emerald-500/10 border-emerald-500/30 text-emerald-400'
+                        }`}
+                      >
+                        <div className="flex items-center gap-3">
+                          {result.matched ? (
+                            <div className="w-10 h-10 rounded-full bg-red-500/20 flex items-center justify-center text-red-400 shrink-0">
+                              <AlertTriangle className="w-5 h-5 animate-pulse" />
+                            </div>
+                          ) : (
+                            <div className="w-10 h-10 rounded-full bg-emerald-500/20 flex items-center justify-center text-emerald-400 shrink-0">
+                              <CheckCircle2 className="w-5 h-5" />
+                            </div>
+                          )}
+                          <div>
+                            <h4 className="text-base font-bold">
+                              {result.matched ? 'RULE MATCHED (TRIGGERED)' : 'RULE NOT TRIGGERED (PASSED)'}
+                            </h4>
+                            <p className="text-xs opacity-80 mt-0.5">
+                              {result.matched
+                                ? `All conditions for rule ${result.ruleId} were satisfied.`
+                                : `Parameters did not exceed thresholds defined in rule ${result.ruleId}.`}
+                            </p>
+                          </div>
+                        </div>
 
-                      <p className="text-xs text-foreground font-mono">
-                        {result.simulatedSignal.evidence.summary}
-                      </p>
+                        <span className="font-mono text-xs font-bold uppercase px-2.5 py-1 rounded bg-black/40">
+                          {result.matched ? 'MATCHED' : 'CLEAR'}
+                        </span>
+                      </motion.div>
+                    )}
+                  </AnimatePresence>
 
-                      <div className="grid grid-cols-3 gap-2 text-[11px] font-mono text-muted-foreground pt-1">
-                        <div>
-                          <span>Signal Type:</span>{' '}
-                          <strong className="text-foreground">{result.simulatedSignal.signalType}</strong>
+                  {/* Generated Signal Preview shown once complete */}
+                  <AnimatePresence>
+                    {evaluationComplete && result.simulatedSignal && (
+                      <motion.div
+                        initial={reduce ? false : { opacity: 0, y: 6 }}
+                        animate={{ opacity: 1, y: 0 }}
+                        transition={{ duration: 0.3, delay: 0.1 }}
+                        className="p-4 bg-muted/30 border border-border rounded-xl space-y-2"
+                      >
+                        <div className="flex items-center justify-between">
+                          <span className="text-xs uppercase font-bold text-muted-foreground tracking-wider flex items-center gap-1.5">
+                            <Zap className="w-3.5 h-3.5 text-amber-400" />
+                            Generated Simulated Finding
+                          </span>
+                          <span className="font-mono text-xs text-primary font-bold">
+                            {result.simulatedSignal.id}
+                          </span>
                         </div>
-                        <div>
-                          <span>Severity:</span>{' '}
-                          <strong className="text-foreground">{result.simulatedSignal.severity}</strong>
+
+                        <p className="text-xs text-foreground font-mono">
+                          {result.simulatedSignal.evidence.summary}
+                        </p>
+
+                        <div className="grid grid-cols-3 gap-2 text-[11px] font-mono text-muted-foreground pt-1">
+                          <div>
+                            <span>Signal Type:</span>{' '}
+                            <strong className="text-foreground">{result.simulatedSignal.signalType}</strong>
+                          </div>
+                          <div>
+                            <span>Severity:</span>{' '}
+                            <strong className="text-foreground">{result.simulatedSignal.severity}</strong>
+                          </div>
+                          <div>
+                            <span>Status:</span> <strong className="text-emerald-400">ACTIVE</strong>
+                          </div>
                         </div>
-                        <div>
-                          <span>Status:</span> <strong className="text-emerald-400">ACTIVE</strong>
+
+                        <div className="flex justify-end pt-2 border-t border-border/50">
+                          <Button
+                            size="sm"
+                            variant="outline"
+                            onClick={() => {
+                              emitMockSignal(result.simulatedSignal!);
+                            }}
+                            className="h-7 text-xs gap-1.5 border-primary/30 text-primary hover:bg-primary/10 transition-all duration-200"
+                          >
+                            <Zap className="w-3.5 h-3.5 text-amber-400" />
+                            Dispatch Finding to Live Signals Queue
+                          </Button>
                         </div>
-                      </div>
-                    </div>
-                  )}
+                      </motion.div>
+                    )}
+                  </AnimatePresence>
                 </div>
               )}
             </div>
